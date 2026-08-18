@@ -14,7 +14,7 @@ Local dev: `npm run dev -- --host` (vite, :5173, hot reload, proxies /api)
 | `/queue?key=<ADMIN_KEY>` | Nick | + PLAYED buttons (tap song title → Ultimate Guitar chart), goal admin (add w/ autocomplete, price, Seed +$5/20/50, delete, clear all), two-tap **End the show** (sweeps open phones → `/#fanlist`, clears queue + goals). |
 | `/join` | Capture | The Club funnel (conversational, explicit opt-ins, "Tell a friend" share CTA). Variants: `?src=kiosk` (XL, auto-reset 8s) · `live` (default — printed QR) · `digital` (IG bio) · `stripe` (post-tip entry — set Stripe payment-link confirmation redirect here). |
 | `/links` | Linktree replacement | Show-night hub: Join The Club, tip jar, song list, social icons, music/tour, "book me" → EPK. |
-| `/epk` | Industry | Press kit, outline order (contact above fold → bios by length → recordings → config-labeled video → downloadable photos → track record → tech + downloads → dates). Orderings: `?for=venues` · `?for=listening` · `?for=agency`. |
+| `/epk` | Industry | Press kit, outline order (headshot + contact above fold → bios by length → recordings → config-labeled video → downloadable photos → track record → tech + downloads → dates). Audience orderings are clean routes: `/epk/venues` · `/epk/listening` · `/epk/agency` (on the subdomain: `epk.nickrainsmusic.com/venues` etc; legacy `?for=` still works). The audience switcher is hidden from buyers — append `?preview` to show it. |
 
 Redirects: `/linktree`, `/club` → `/links` · `/entertainment` → `/epk?for=venues` · `/artist` → `/epk?for=listening` · `*` → `/`.
 
