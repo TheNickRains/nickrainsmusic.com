@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { CONTACT, LINKS, HOOK, BIO_BRIEF, BIO_EXTENDED, CONFIGS, DRAW, CADENCE } from '../data'
 
 type Audience = 'standard' | 'venues' | 'listening' | 'agency'
@@ -34,12 +34,27 @@ const Section = ({
   </section>
 )
 
+const AUDIENCE_SEGMENTS = ['venues', 'listening', 'agency'] as const
+
 const Epk = () => {
-  const [params, setParams] = useSearchParams()
+  const [params] = useSearchParams()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  // Clean routes: /venues, /listening, /agency (on epk. subdomain) or
+  // /epk/venues etc. on the main domain. Legacy ?for= links still work.
+  const lastSeg = location.pathname.split('/').filter(Boolean).pop() || ''
   const forParam = params.get('for')
   const audience: Audience =
-    forParam === 'listening' || forParam === 'agency' || forParam === 'venues' ? forParam : 'standard'
+    (AUDIENCE_SEGMENTS as readonly string[]).includes(lastSeg)
+      ? (lastSeg as Audience)
+      : forParam === 'listening' || forParam === 'agency' || forParam === 'venues'
+        ? forParam
+        : 'standard'
   const showSwitcher = params.get('preview') !== null
+  const base = location.pathname.startsWith('/epk') ? '/epk' : ''
+  const goTo = (a: Audience) =>
+    navigate(`${a === 'standard' ? base || '/' : `${base}/${a}`}?preview`)
 
   useEffect(() => {
     const script = document.createElement('script')
@@ -231,7 +246,7 @@ const Epk = () => {
             {(Object.keys(ORDER) as Audience[]).map((a) => (
               <button
                 key={a}
-                onClick={() => setParams(a === 'standard' ? { preview: '' } : { for: a, preview: '' })}
+                onClick={() => goTo(a)}
                 className={`px-2.5 py-1 border transition-colors ${
                   audience === a ? 'bg-ink text-cream border-ink' : 'border-ink/30 hover:border-ink'
                 }`}
