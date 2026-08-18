@@ -39,6 +39,7 @@ const Epk = () => {
   const forParam = params.get('for')
   const audience: Audience =
     forParam === 'listening' || forParam === 'agency' || forParam === 'venues' ? forParam : 'standard'
+  const showSwitcher = params.get('preview') !== null
 
   useEffect(() => {
     const script = document.createElement('script')
@@ -225,11 +226,12 @@ const Epk = () => {
           <Link to="/">
             <img src="/images/logo-black.png" alt="Nick Rains" className="h-9 w-auto" />
           </Link>
+          {showSwitcher && (
           <div className="flex gap-1 font-mono text-[10px] uppercase">
             {(Object.keys(ORDER) as Audience[]).map((a) => (
               <button
                 key={a}
-                onClick={() => setParams(a === 'standard' ? {} : { for: a })}
+                onClick={() => setParams(a === 'standard' ? { preview: '' } : { for: a, preview: '' })}
                 className={`px-2.5 py-1 border transition-colors ${
                   audience === a ? 'bg-ink text-cream border-ink' : 'border-ink/30 hover:border-ink'
                 }`}
@@ -238,9 +240,14 @@ const Epk = () => {
               </button>
             ))}
           </div>
+          )}
         </div>
 
         <div className="grid md:grid-cols-[1fr_210px] gap-6 items-start">
+          <figure className="polaroid rotate-2 w-44 mx-auto mb-2 md:hidden">
+            <img src="/images/headshot.jpg" alt="Nick Rains" className="film w-full h-44 object-cover" />
+            <figcaption>Nashville, TN</figcaption>
+          </figure>
           <div>
             <h1 className="display text-[15vw] md:text-8xl mb-3">Nick Rains</h1>
             <p className="font-mono text-xs uppercase text-ink/60 mb-3">
