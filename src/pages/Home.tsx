@@ -146,7 +146,7 @@ const Home = () => {
       </section>
 
       {/* CONTACT + SUBSCRIBE */}
-      <section id="contact" className="torn bg-olive text-cream px-5 md:px-10 pt-16 pb-6">
+      <section id="contact" className="torn bg-olive text-cream px-5 md:px-10 pt-16 pb-0">
         <div className="max-w-3xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 mb-12 items-start">
             <div>
@@ -179,7 +179,9 @@ const Home = () => {
             </p>
           </div>
         </div>
-        <div className="ghost text-[20vw] text-center -mb-[8vw]">Nick Rains</div>
+        <div className="h-[11vw] overflow-hidden -mx-5 md:-mx-10 mt-4">
+          <div className="ghost text-[20vw] text-center whitespace-nowrap">Nick Rains</div>
+        </div>
       </section>
     </div>
   )

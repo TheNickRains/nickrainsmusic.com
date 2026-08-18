@@ -275,7 +275,9 @@ const Epk = () => {
             <Link to="/" className="underline hover:text-orange">nickrainsmusic.com</Link>
           </div>
         </div>
-        <div className="ghost text-[22vw] text-center -mb-[7vw]">Nick Rains</div>
+        <div className="h-[12vw] overflow-hidden mt-4">
+          <div className="ghost text-[22vw] text-center whitespace-nowrap">Nick Rains</div>
+        </div>
       </footer>
     </div>
   )
