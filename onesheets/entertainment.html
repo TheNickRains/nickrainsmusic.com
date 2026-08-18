@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Nick Rains — Live Entertainment One Sheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;600;700&family=Space+Mono:wght@700&display=swap">
+<style>
+  :root{ --ink:#282825; --gold:#c65a1e; --smoke:#6d6a64; --line:#e0dcd2; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  @page{ size:Letter; margin:0; }
+  html,body{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  body{ font-family:'Barlow',sans-serif; color:var(--ink); width:8.5in; height:11in; background:#fff; }
+  .serif{ font-family:'Anton',sans-serif; }
+  .page{ height:11in; display:flex; flex-direction:column; }
+
+  .mast{ background:var(--ink); color:#fff; padding:0.42in 0.55in 0.36in; display:flex; justify-content:space-between; align-items:flex-end; }
+  .mast h1{ font-family:'Anton',sans-serif; font-size:38px; font-weight:900; line-height:1; }
+  .mast .k{ color:var(--gold); font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; margin-top:7px; }
+  .mast .right{ text-align:right; font-size:10.5px; line-height:1.6; color:#cfcbc2; }
+  .mast .right b{ color:var(--gold); }
+
+  .stats{ display:flex; border-bottom:2px solid var(--ink); }
+  .stats div{ flex:1; text-align:center; padding:12px 6px; border-right:1px solid var(--line); }
+  .stats div:last-child{ border-right:none; }
+  .stats .n{ font-family:'Anton',sans-serif; font-size:22px; font-weight:900; }
+  .stats .l{ font-size:8.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--smoke); margin-top:2px; }
+
+  .body{ padding:0.28in 0.55in 0; flex:1; display:flex; flex-direction:column; }
+  .hero{ display:flex; gap:16px; margin-bottom:14px; }
+  .hero img{ width:2.15in; height:2.5in; object-fit:cover; border-radius:4px; }
+  .pitch{ flex:1; }
+  .pitch h2{ font-family:'Anton',sans-serif; font-size:19px; font-weight:700; line-height:1.25; margin-bottom:8px; }
+  .pitch p{ font-size:10.8px; line-height:1.55; color:#3c3a36; margin-bottom:6px; }
+
+  .label{ font-size:9.5px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold); margin:10px 0 7px; border-bottom:1px solid var(--line); padding-bottom:3px; }
+
+  .configs{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .cfg{ border:1px solid var(--line); border-radius:4px; padding:6px 8px; }
+  .cfg .n{ font-weight:700; font-size:10.5px; }
+  .cfg .p{ font-size:8.5px; color:var(--gold); font-weight:700; }
+  .cfg .d{ font-size:8.5px; color:var(--smoke); line-height:1.35; margin-top:1px; }
+
+  .cols{ display:flex; gap:20px; }
+  .col{ flex:1; }
+  .list li{ list-style:none; font-size:10px; padding:3.5px 0; border-bottom:1px dotted var(--line); line-height:1.4; }
+  .list b{ font-weight:700; }
+  .list small{ color:var(--smoke); }
+
+  .foot{ margin-top:auto; background:var(--ink); color:#fff; padding:0.26in 0.55in; display:flex; justify-content:space-between; align-items:center; }
+  .foot .b{ font-size:11.5px; line-height:1.5; }
+  .foot .b b{ font-family:'Anton',sans-serif; font-size:14px; color:var(--gold); }
+  .foot .links{ text-align:right; font-size:9px; line-height:1.6; color:#cfcbc2; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="mast">
+      <div>
+        <h1>NICK RAINS</h1>
+        <div class="k">Live Entertainment &bull; Nashville, TN</div>
+      </div>
+      <div class="right">
+        <b>One act. Every room.</b><br>
+        Solo acoustic &rarr; 7-piece band<br>
+        Bars &bull; Casinos &bull; Restaurants &bull; Private events
+      </div>
+    </div>
+
+    <div class="stats">
+      <div><div class="n">1,000+</div><div class="l">Song repertoire</div></div>
+      <div><div class="n">3&ndash;4 hrs</div><div class="l">Solo, no dead air</div></div>
+      <div><div class="n">1&rarr;7</div><div class="l">Piece configurations</div></div>
+      <div><div class="n">15+ yrs</div><div class="l">Touring experience</div></div>
+      <div><div class="n">Zero</div><div class="l">Backline needed (solo)</div></div>
+    </div>
+
+    <div class="body">
+      <div class="hero">
+        <img src="../public/images/catbird.jpg" alt="Nick Rains live">
+        <div class="pitch">
+          <h2 class="serif">Fifteen years of stages. A lineup that fits your room, your crowd, and your budget.</h2>
+          <p>Nick Rains is a Nashville-based performer with a 1,000-song repertoire spanning Nashville &amp; Texas country, rock singalongs, and modern alternative hits &mdash; read to the crowd, not run off a script. Solo and duo dates travel with a complete wireless Bose PA: one power outlet, a 6&prime;&times;6&prime; corner, set up in under 30 minutes.</p>
+          <p>For bigger nights the act scales to a trio, quartet, five-piece full band, or a seven-piece Nashville Extended lineup with steel guitar and fiddle. One booking contact, professional players, two years of distillery-circuit residencies behind it.</p>
+        </div>
+      </div>
+
+      <div class="label">Six show-ready configurations</div>
+      <div class="configs">
+        <div class="cfg"><span class="n">Solo Acoustic</span> <span class="p">1 pc</span><div class="d">Fully self-contained &mdash; needs only power.</div></div>
+        <div class="cfg"><span class="n">Acoustic Duo</span> <span class="p">2 pc</span><div class="d">Dining-room &amp; cocktail-hour volume.</div></div>
+        <div class="cfg"><span class="n">Trio</span> <span class="p">3 pc</span><div class="d">Drums, bass, guitar &mdash; bar-band core.</div></div>
+        <div class="cfg"><span class="n">Quartet</span> <span class="p">4 pc</span><div class="d">Drums, bass, guitar, keys.</div></div>
+        <div class="cfg"><span class="n">Full Band</span> <span class="p">5 pc</span><div class="d">The dance-floor lineup.</div></div>
+        <div class="cfg"><span class="n">Nashville Extended</span> <span class="p">7 pc</span><div class="d">+ Steel guitar &amp; fiddle showcase.</div></div>
+      </div>
+
+      <div class="cols">
+        <div class="col">
+          <div class="label">Rooms &amp; events</div>
+          <ul class="list">
+            <li><b>Bars &amp; honky-tonks</b> <small>&mdash; multi-hour sets that keep drinks moving</small></li>
+            <li><b>Casinos &amp; resorts</b> <small>&mdash; polished, self-managed, show-ready</small></li>
+            <li><b>Restaurants &amp; distilleries</b> <small>&mdash; 2 years on the distillery circuit</small></li>
+            <li><b>Weddings &amp; private events</b> <small>&mdash; ceremony to reception, one vendor</small></li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="label">Logistics</div>
+          <ul class="list">
+            <li><b>Solo/duo:</b> <small>complete wireless PA travels with the act</small></li>
+            <li><b>Band (3&ndash;7 pc):</b> <small>house PA, 16 ch, 3&ndash;4 monitor mixes</small></li>
+            <li><b>Paperwork:</b> <small>input list &amp; stage plot sent at booking</small></li>
+            <li><b>Contact:</b> <small>independent &mdash; one call, straight to the artist</small></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="b">
+        <b>Booking &mdash; Independent</b><br>
+        booking@nickrainsmusic.com &nbsp;&bull;&nbsp; 504-518-0117
+      </div>
+      <div class="links">
+        Video &amp; full EPK: nickrainsmusic.com/epk<br>
+        IG @nickrains &bull; TikTok @nickrainsmusic &bull; YouTube @thenickrains
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/images/logo-mark.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#25290e" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // iOS Safari: suppress automatic input/double-tap zoom (manual pinch still works)
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        document.querySelector('meta[name="viewport"]').setAttribute(
+          'content',
+          'width=device-width, initial-scale=1.0, maximum-scale=1.0'
+        );
+      }
+    </script>
+    <title>Nick Rains — Nashville, TN</title>
+    <meta name="description" content="Nick Rains — Nashville-based performer and indie-folk songwriter. Solo acoustic to a seven-piece band. Booking and press." />
+    <meta name="author" content="Nick Rains" />
+    <meta property="og:title" content="Nick Rains — Nashville, TN" />
+    <meta property="og:description" content="Nashville-based performer and indie-folk songwriter. Solo acoustic to a seven-piece band." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/images/hero.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/images/hero.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

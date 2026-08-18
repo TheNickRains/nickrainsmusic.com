@@ -1,0 +1,126 @@
+# Nick's Nashville set — matched fuzzily against songs.json.
+# Categories: [hundred] = $100 goal-song candidates
+[hundred] Freebird
+[hundred] devil went down to Georgia
+[hundred] dicked down in Dallas
+[hundred] bohemian rhapsody
+[hundred] crazy bitch
+neon moon
+boot scootin boogie
+brand new man
+should've been a cowboy
+friends in low places
+calling Baton Rouge
+wagon wheel
+she's country
+white horse
+tennessee whiskey
+courtesy of the red white and blue
+beer never broke my heart
+somebody like you
+the fireman
+Amarillo by morning
+Check yes or no
+never even called me by name
+Family tradition
+Dixieland delight
+mountain music
+gotta have a fiddle in the band
+I had some help
+a bar song tipsy
+chattahoochie
+fishing in the dark
+last night
+sold grundy county auction
+two dozen roses
+I like it I love it
+something like that
+live like you were dying
+white house road
+feathered Indians
+dust on the bottle
+I never lie
+sounds like the radio
+cruise
+John Deere green
+Pickup man
+country girl shake it for me
+good directions
+people are crazy
+revival
+guitars and Cadillacs
+fast as you
+save a horse
+whiskey glasses
+mama tried
+long haired country boy
+til you can't
+American kids
+Fast car
+tequila makes her clothes fall off
+heartache on the dance floor
+dirt road anthem
+Folsom prison blues
+ring of fire
+copperhead road
+watermelon crawl
+drink in my hand
+Springsteen
+chicken fried
+it's a great day to be alive
+all my exes live in Texas
+you should probably leave
+you ain't woman enough
+fancy
+Man I feel like a woman
+any man of mine
+whose bed have your boots been under
+choosing Texas
+be her
+you look like you love me
+9 to 5
+Jolene
+islands in the stream
+no one else on earth
+heads Carolina
+bye bye
+here for the party
+redneck woman
+gunpowder and lead
+mamas broken heart
+before he cheats
+Tennessee orange
+heart like a truck
+watermelon moonshine
+suds in the bucket
+she's in love with the boy
+kerosene
+need you now
+downtown
+delta dawn
+crazy
+walking after midnight
+goodbye Earl
+cowboy take me away
+strawberry wine
+angel from Montgomery
+independence day
+pontoon
+My church
+Take it easy
+honky tonk woman
+life in the fast lane
+hotel California
+simple man
+sweet home Alabama
+give me three steps
+rambling man
+keep your hands to yourself
+hard to handle
+American girl
+Mary Jane's last dance
+can't you see
+Write this down
+blue clear sky
+my Maria
+I'm in a hurry

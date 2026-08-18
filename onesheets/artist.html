@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Nick Rains — Artist One Sheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;600;700&family=Space+Mono:wght@700&display=swap">
+<style>
+  :root{ --cream:#f2ede4; --espresso:#282825; --clay:#c65a1e; --muted:#7a7166; --line:#e2d9c8; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  @page{ size:Letter; margin:0; }
+  html,body{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  body{ font-family:'Barlow',sans-serif; color:var(--espresso); width:8.5in; height:11in; background:var(--cream); }
+  .serif{ font-family:'Anton',sans-serif; }
+  .page{ height:11in; display:flex; flex-direction:column; padding:0.5in 0.55in; }
+
+  .mast{ display:flex; justify-content:space-between; align-items:flex-end; border-bottom:3px solid var(--clay); padding-bottom:12px; margin-bottom:18px; }
+  .mast h1{ font-family:'Anton',sans-serif; font-size:40px; font-weight:900; line-height:1; }
+  .mast .k{ color:var(--clay); font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; margin-top:7px; }
+  .mast .right{ text-align:right; font-size:10.5px; line-height:1.6; color:var(--muted); }
+
+  .hero{ display:flex; gap:20px; margin-bottom:16px; }
+  .hero img{ width:2.5in; height:3.1in; object-fit:cover; border-radius:5px; }
+  .copy{ flex:1; }
+  .tag{ font-family:'Anton',sans-serif; font-size:20px; font-weight:700; color:var(--clay); line-height:1.3; margin-bottom:10px; }
+  .copy p{ font-size:11px; line-height:1.6; color:#4a4238; margin-bottom:8px; }
+
+  .label{ font-size:9.5px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--clay); margin:12px 0 8px; border-bottom:1px solid var(--line); padding-bottom:4px; }
+
+  .cols{ display:flex; gap:22px; }
+  .col{ flex:1; }
+  .stages li{ list-style:none; font-size:10.5px; padding:5px 0; border-bottom:1px dotted var(--line); }
+  .stages b{ font-family:'Anton',sans-serif; font-size:12px; }
+  .stages small{ display:block; color:var(--muted); font-size:9.5px; margin-top:1px; }
+  .facts li{ list-style:none; display:flex; justify-content:space-between; font-size:10.5px; padding:5px 0; border-bottom:1px dotted var(--line); }
+  .facts li span:first-child{ color:var(--muted); }
+  .facts li span:last-child{ font-weight:700; text-align:right; }
+
+  .record{ background:#fffdf8; border:1px solid var(--line); border-radius:6px; padding:12px 16px; margin-top:14px; }
+  .record b{ font-family:'Anton',sans-serif; font-size:13px; }
+  .record p{ font-size:10px; color:#4a4238; line-height:1.5; margin-top:3px; }
+
+  .foot{ margin-top:auto; background:var(--espresso); color:var(--cream); border-radius:6px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; }
+  .foot .b{ font-size:11.5px; line-height:1.5; }
+  .foot .b b{ font-family:'Anton',sans-serif; font-size:14px; color:#e8a06a; }
+  .foot .links{ text-align:right; font-size:9px; line-height:1.6; opacity:.9; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="mast">
+      <div>
+        <h1>NICK RAINS</h1>
+        <div class="k">Indie-Folk Singer-Songwriter &bull; Nashville via Louisiana</div>
+      </div>
+      <div class="right">
+        For listening rooms,<br>festivals &amp; press
+      </div>
+    </div>
+
+    <div class="hero">
+      <img src="../public/images/gallery/g4.jpg" alt="Nick Rains">
+      <div class="copy">
+        <div class="tag">Songs that know where they&rsquo;re from.</div>
+        <p>Nick Rains is an indie-folk singer-songwriter whose Louisiana upbringing and nomadic lifestyle shape every song he writes. He started out busking French Quarter street corners in New Orleans, and over fifteen years of relentless touring &mdash; all the way to a sold-out night at the Viper Room &mdash; the road became his primary classroom.</p>
+        <p>The material he&rsquo;s gathered there reflects the full weight of life at thirty: faith, marriage, love, and loss. His acoustic-driven songs trade in specific places and honest emotions, in the vein of Tyler Childers and Passenger &mdash; the kind of detail that makes a listener feel like they were in the room when it happened.</p>
+        <p>Now based in Nashville with his debut full-length in progress, Rains is building the recorded foundation to match a live reputation that has already won over rooms across the country.</p>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="col">
+        <div class="label">Stages</div>
+        <ul class="stages">
+          <li><b>The Viper Room</b><small>Sold-out headline night &mdash; West Hollywood, CA</small></li>
+          <li><b>Catbird Music Festival</b><small>Festival performance, 2023</small></li>
+          <li><b>French Quarter, New Orleans</b><small>Where it started &mdash; busking street corners</small></li>
+          <li><b>North American Tour</b><small>Two years of headline dates &amp; residencies</small></li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="label">At a glance</div>
+        <ul class="facts">
+          <li><span>Based / Origin</span><span>Nashville / Louisiana</span></li>
+          <li><span>Genre</span><span>Indie-folk / Americana</span></li>
+          <li><span>Sounds like</span><span>Tyler Childers, Passenger</span></li>
+          <li><span>Format</span><span>Solo acoustic (band available)</span></li>
+          <li><span>Experience</span><span>15+ years on the road</span></li>
+        </ul>
+        <div class="record">
+          <b>The debut record is in progress</b>
+          <p>Singles streaming now on Spotify &amp; Apple Music. The full-length is being recorded in Nashville &mdash; booking a listening-room date directly supports finishing it.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="b">
+        <b>Booking &mdash; Independent</b><br>
+        booking@nickrainsmusic.com &nbsp;&bull;&nbsp; 504-518-0117
+      </div>
+      <div class="links">
+        Listen &amp; full EPK: nickrainsmusic.com/epk<br>
+        Spotify / Apple Music: Nick Rains &bull; IG @nickrains
+      </div>
+    </div>
+  </div>
+</body>
+</html>

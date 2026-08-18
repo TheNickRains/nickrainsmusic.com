@@ -1,0 +1,12 @@
+name = "nick-rains-epk"
+compatibility_date = "2026-08-01"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nick-rains-queue"
+database_id = "placeholder-set-on-deploy"
+
+# Secrets (set via `wrangler pages secret put` on deploy, or .dev.vars locally):
+#   ADMIN_KEY             — Nick's private queue-control key
+#   STRIPE_WEBHOOK_SECRET — signing secret for the Stripe webhook endpoint

@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+/*
+  "Road journal ledger" system — synthesized from research:
+  - Anton display / Barlow body / Space Mono metadata (mono whispers the facts)
+  - Warm palette, no pure black or white: bone paper, warm charcoal ink,
+    deep olive dark sections, one burnt-orange accent
+  - Physical texture: speckle, film grain, torn-paper edge, tilted polaroids
+  - Print-shop buttons, ledger rows, mono index labels
+*/
+
+@theme {
+  --font-display: "Anton", "Arial Narrow", sans-serif;
+  --font-sans: "Barlow", system-ui, sans-serif;
+  --font-mono: "Space Mono", monospace;
+
+  --color-paper: #f2ede4;
+  --color-ink: #282825;
+  --color-olive: #25290e;
+  --color-cream: #f5e9d1;
+  --color-orange: #c65a1e;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* iOS Safari auto-zooms any focused input with font-size < 16px, and the
+   zoom sticks — creating x/y scroll. Inputs never go below 16px. */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+a,
+button,
+input,
+select,
+textarea,
+label {
+  touch-action: manipulation;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+.display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 0.92;
+}
+
+/* Speckled bone paper */
+.speckle {
+  background-color: var(--color-paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+}
+
+/* Full-page film grain (fixed overlay, pure CSS) */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+}
+
+/* Warm film grade for photos */
+.film {
+  filter: sepia(0.22) contrast(1.04) saturate(0.92);
+}
+
+/* Mono index label — "● SECTION" + optional right-hand note */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.5rem;
+}
+.section-head::before {
+  content: "\25CF\2002";
+}
+.section-head .note {
+  font-weight: 400;
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+  text-transform: none;
+}
+
+/* Print-shop buttons: flat rectangle or thin outline, mono caps */
+.btn {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.8rem 1.6rem;
+  background: var(--color-orange);
+  color: var(--color-cream);
+  transition: background 0.15s, color 0.15s;
+}
+.btn:hover {
+  background: var(--color-ink);
+}
+.btn-ghost {
+  background: transparent;
+  color: currentColor;
+  border: 2px solid currentColor;
+}
+.btn-ghost:hover {
+  background: var(--color-orange);
+  border-color: var(--color-orange);
+  color: var(--color-cream);
+}
+
+/* Ledger rows */
+.row-line {
+  border-bottom: 1px solid currentColor;
+}
+
+/* Torn-paper edge into the next section (use on the LOWER section, colored to it) */
+.torn {
+  clip-path: polygon(
+    0 14px, 4% 4px, 9% 12px, 15% 3px, 21% 11px, 27% 5px, 33% 13px, 40% 4px,
+    46% 10px, 53% 3px, 60% 12px, 66% 6px, 72% 13px, 79% 4px, 85% 11px,
+    91% 5px, 96% 12px, 100% 6px, 100% 100%, 0 100%
+  );
+  margin-top: -14px;
+}
+
+/* Tilted polaroid photo card with mono caption */
+.polaroid {
+  background: var(--color-cream);
+  padding: 10px 10px 30px;
+  box-shadow: 0 2px 8px rgba(40, 40, 37, 0.28);
+  transition: transform 0.25s;
+}
+.polaroid:hover {
+  transform: rotate(0deg) translateY(-3px) !important;
+}
+.polaroid figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-ink);
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* Ghost wordmark cut off by page bottom */
+.ghost {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  line-height: 0.72;
+  opacity: 0.1;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+}
