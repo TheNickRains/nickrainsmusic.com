@@ -129,13 +129,13 @@ const Links = () => {
 
         {/* Link ledger */}
         <div className="mb-8">
-          <Link
-            to="/songs"
+          <a
+            href="https://songs.nickrainsmusic.com"
             className="row-line border-ink/25 flex justify-between items-center py-4 group"
           >
-            <span className="font-medium">The song list — search it, request one</span>
+            <span className="font-medium">The song list — 782 songs, browse it</span>
             <span className="font-mono text-xs text-orange group-hover:translate-x-1 transition-transform">→</span>
-          </Link>
+          </a>
           {rows.map((r) => (
             <a
               key={r.label}
