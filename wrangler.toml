@@ -5,7 +5,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "nick-rains-queue"
-database_id = "placeholder-set-on-deploy"
+database_id = "9e8efd5d-d487-4753-ba15-e3aafff10b04"
 
 # Secrets (set via `wrangler pages secret put` on deploy, or .dev.vars locally):
 #   ADMIN_KEY             — Nick's private queue-control key
