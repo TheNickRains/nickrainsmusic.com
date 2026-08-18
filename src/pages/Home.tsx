@@ -41,7 +41,7 @@ const Home = () => {
           </h1>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-2">
             <p className="font-mono text-[11px] md:text-xs uppercase text-cream/80">
-              Indie-folk · Nashville, TN
+              Songwriter · Artist · Producer
             </p>
             <a href="#fanlist" className="btn">
               Get Nick to play your hometown →

@@ -83,7 +83,7 @@ const Links = () => {
           />
           <h1 className="display text-5xl mb-3">Nick Rains</h1>
           <p className="font-mono text-[11px] uppercase text-ink/60 mb-4">
-            Indie-folk · Nashville, TN
+            Songwriter · Artist · Producer
           </p>
           <p className="text-[15px] leading-snug max-w-xs mx-auto">
             If you're a fan of what I do — please, please, <em>please</em> join The Club.
