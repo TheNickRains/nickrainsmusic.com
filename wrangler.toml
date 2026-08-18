@@ -7,6 +7,11 @@ binding = "DB"
 database_name = "nick-rains-queue"
 database_id = "9e8efd5d-d487-4753-ba15-e3aafff10b04"
 
+[vars]
+RESEND_FROM = "The Club <club@nickrainsmusic.com>"
+RESEND_TO = "thenickrains@gmail.com"
+
 # Secrets (set via `wrangler pages secret put` on deploy, or .dev.vars locally):
 #   ADMIN_KEY             — Nick's private queue-control key
 #   STRIPE_WEBHOOK_SECRET — signing secret for the Stripe webhook endpoint
+#   RESEND_API_KEY        — Resend API key (wrap-up emails on End the show)

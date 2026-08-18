@@ -7,8 +7,7 @@
 //   1. Upsert into D1 `fans` (site's own copy)
 //   2. Forward normalized payload to GAS → Google Sheets CRM
 //      (env: GAS_TALLY_URL + GAS_AUTH_TOKEN — skipped if unset)
-//   3. Notify Nick via Resend (env: RESEND_API_KEY + RESEND_FROM + RESEND_TO
-//      — skipped if unset)
+// Signup notifications are a WRAP-UP, not per-signup — see /api/show end-show.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const SOURCES = ['Kiosk', 'Live', 'Digital', 'Stripe Redirect', 'Website']
@@ -73,25 +72,6 @@ export async function onRequestPost(context) {
           postalCode: zip,
           source,
           subscriberSince: new Date(now).toISOString(),
-        }),
-      }).catch(() => {})
-    )
-  }
-
-  // 3. Resend notification
-  if (env.RESEND_API_KEY && env.RESEND_FROM && env.RESEND_TO) {
-    context.waitUntil(
-      fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          authorization: `Bearer ${env.RESEND_API_KEY}`,
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: env.RESEND_FROM,
-          to: env.RESEND_TO,
-          subject: `🎸 New Club member (${source}): ${firstName || email}`,
-          text: `${firstName} ${lastName}\n${email}\n${phone ? `${phone} (texts: ${phoneOptIn ? 'yes' : 'no'})\n` : ''}${zip ? `ZIP ${zip}\n` : ''}Source: ${source}`,
         }),
       }).catch(() => {})
     )

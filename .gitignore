@@ -29,3 +29,6 @@ dist-ssr
 
 # Secrets — never commit
 .env
+
+# Scratch notes — may contain secrets
+notepad.md
