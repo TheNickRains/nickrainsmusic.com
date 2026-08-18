@@ -76,7 +76,7 @@ export async function onRequestPost(context) {
           ]
         : []),
       '',
-      'Full list: https://nickrainsmusic.com/api/fans?key=<your admin key>',
+      `Full list: https://nickrainsmusic.com/api/fans?key=${env.ADMIN_KEY}`,
     ]
 
     context.waitUntil(
