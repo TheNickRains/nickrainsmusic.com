@@ -55,7 +55,7 @@ const Links = () => {
   useEffect(() => {
     document.title = 'Nick Rains — Links'
     return () => {
-      document.title = 'Nick Rains — Official EPK'
+      document.title = 'Nick Rains'
     }
   }, [])
 

@@ -90,7 +90,7 @@ const Songs = ({ bare = false }: { bare?: boolean }) => {
   useEffect(() => {
     document.title = 'Nick Rains — The Song List'
     return () => {
-      document.title = 'Nick Rains — Official EPK'
+      document.title = 'Nick Rains'
     }
   }, [])
 

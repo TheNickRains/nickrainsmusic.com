@@ -191,7 +191,7 @@ const Queue = () => {
     const t = setInterval(load, 8000)
     return () => {
       clearInterval(t)
-      document.title = 'Nick Rains — Official EPK'
+      document.title = 'Nick Rains'
     }
   }, [load])
 
