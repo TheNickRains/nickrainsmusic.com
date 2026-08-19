@@ -79,12 +79,10 @@ export const CONFIGS = [
 
 // Draw proof — honest inventory only. No streaming/social counts (they don't help yet).
 export const DRAW = [
-  { fact: 'The Viper Room — sold-out headline night', where: 'West Hollywood, CA' },
+  { fact: 'The Viper Room', where: 'West Hollywood, CA' },
   { fact: 'Catbird Music Festival', where: '2023' },
-  { fact: 'Multi-month residencies, Austin & San Antonio corridor', where: 'TX' },
-  { fact: 'Two years headlining the North American distillery circuit', where: 'US & Canada' },
+  { fact: 'On tour full-time for the past two years — van life, with his wife and son', where: 'ongoing' },
   { fact: '500+ direct-email fan list', where: 'and growing' },
-  { fact: 'Performing weekly', where: 'Nashville & regional' },
 ]
 
 export const CADENCE = 'Performing weekly — Nashville & regional'

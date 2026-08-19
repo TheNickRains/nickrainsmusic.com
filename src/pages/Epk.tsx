@@ -129,7 +129,7 @@ const Epk = () => {
 
   const sections: Record<string, React.ReactNode> = {
     bio: (
-      <Section key="bio" id="bio" title="The story" note="who he is">
+      <Section key="bio" id="bio" title="The story" note="bios">
         <div className="flex items-center gap-1 mb-4">
           {(['short', 'full'] as const).map((v) => (
             <button
@@ -160,7 +160,7 @@ const Epk = () => {
     ),
 
     music: (
-      <Section key="music" id="music" title="Recordings" note="streaming now">
+      <Section key="music" id="music" title="Recordings" note="listen">
         <iframe
           title="Nick Rains on Spotify"
           src={LINKS.spotifyArtistEmbed}
@@ -223,7 +223,7 @@ const Epk = () => {
     ),
 
     draw: (
-      <Section key="draw" id="draw" title="Highlights" note="venues · residencies · reach">
+      <Section key="draw" id="draw" title="Highlights" note="stats">
         <div>
           {DRAW.map((d) => (
             <div key={d.fact} className="row-line border-ink/25 flex justify-between gap-6 items-baseline py-3">
@@ -251,7 +251,7 @@ const Epk = () => {
     ),
 
     rider: (
-      <Section key="rider" id="rider" title="Tech" note="who brings what">
+      <Section key="rider" id="rider" title="Tech" note="riders">
         <div className="mb-6">
           {[
             {
@@ -302,7 +302,7 @@ const Epk = () => {
     ),
 
     dates: (
-      <Section key="dates" id="dates" title="Dates" note={CADENCE.toLowerCase()}>
+      <Section key="dates" id="dates" title="Dates" note="upcoming shows">
         <div
           className="bit-widget-initializer"
           data-artist-name={LINKS.bandsintownArtist}
