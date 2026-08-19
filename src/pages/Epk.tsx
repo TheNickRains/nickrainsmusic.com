@@ -41,6 +41,7 @@ const Section = ({
 // Curated: press shot leads; one photo per outfit/session; no short-hair era.
 const PHOTOS = [
   { src: '/images/headshot.jpg', name: 'Nick-Rains-Press-Photo.jpg', alt: 'Nick Rains — press photo' },
+  { src: '/images/gallery/g4.jpg', name: 'Nick-Rains-Portrait.jpg', alt: 'Nick Rains — portrait' },
   { src: '/images/gallery/g9.jpg', name: 'Nick-Rains-Catbird-Festival-by-Kevin-Ferguson.jpg', alt: 'Nick Rains at Catbird Music Festival, by Kevin Ferguson' },
   { src: '/images/gallery/g6.jpg', name: 'Nick-Rains-Live-Acoustic.jpg', alt: 'Nick Rains live, acoustic' },
   { src: '/images/gallery/g2.jpg', name: 'Nick-Rains-Night-Session.jpg', alt: 'Nick Rains — night session with electric guitar' },
@@ -142,7 +143,7 @@ const Epk = () => {
           <p className="text-lg md:text-xl leading-snug font-medium mb-4">{BIO_BRIEF}</p>
         ) : (
           BIO_EXTENDED.map((p, i) => (
-            <p key={i} className="text-ink/80 leading-relaxed mb-4">{p}</p>
+            <p key={i} className="text-lg md:text-xl leading-snug font-medium mb-4">{p}</p>
           ))
         )}
         <button
