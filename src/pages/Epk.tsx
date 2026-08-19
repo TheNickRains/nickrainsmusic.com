@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { CONTACT, LINKS, HOOK, BIO_BRIEF, BIO_EXTENDED, CONFIGS, DRAW, CADENCE } from '../data'
 
@@ -57,6 +57,49 @@ const Epk = () => {
         : 'standard'
   const showSwitcher = params.get('preview') !== null
   const [bioView, setBioView] = useState<'short' | 'full'>('short')
+  const [bioCopied, setBioCopied] = useState(false)
+  const heroRef = useRef<HTMLImageElement | null>(null)
+  const photoStripRef = useRef<HTMLDivElement | null>(null)
+
+  // 8) when the photo strip first enters view, nudge it to reveal the overflow
+  useEffect(() => {
+    const el = photoStripRef.current
+    if (!el) return
+    let done = false
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (done || !entries[0].isIntersecting) return
+        done = true
+        el.scrollTo({ left: 64, behavior: 'smooth' })
+        setTimeout(() => el.scrollTo({ left: 0, behavior: 'smooth' }), 550)
+        obs.disconnect()
+      },
+      { threshold: 0.5 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [audience])
+
+  // 4) gentle parallax on the mobile hero
+  useEffect(() => {
+    const onScroll = () => {
+      const el = heroRef.current
+      if (!el) return
+      const y = Math.min(window.scrollY, 500)
+      el.style.transform = `translateY(${y * 0.35}px) scale(${1 + y / 4000})`
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const copyBio = async () => {
+    const text = bioView === 'short' ? BIO_BRIEF : `${BIO_BRIEF}\n\n${BIO_EXTENDED.join('\n\n')}`
+    try {
+      await navigator.clipboard.writeText(text.replace(/\n(?!\n)/g, ' '))
+      setBioCopied(true)
+      setTimeout(() => setBioCopied(false), 2000)
+    } catch { /* clipboard unavailable */ }
+  }
   const base = location.pathname.startsWith('/epk') ? '/epk' : ''
   const goTo = (a: Audience) =>
     navigate(`${a === 'standard' ? base || '/' : `${base}/${a}`}?preview`)
@@ -73,8 +116,8 @@ const Epk = () => {
 
   const sections: Record<string, React.ReactNode> = {
     bio: (
-      <Section key="bio" id="bio" title="The story">
-        <div className="flex items-center gap-1 mb-1">
+      <Section key="bio" id="bio" title="The story" note="who he is">
+        <div className="flex items-center gap-1 mb-4">
           {(['short', 'full'] as const).map((v) => (
             <button
               key={v}
@@ -86,10 +129,13 @@ const Epk = () => {
               {v}
             </button>
           ))}
+          <button
+            onClick={copyBio}
+            className="font-mono text-[11px] uppercase px-3 py-1.5 border border-ink/30 hover:border-orange hover:text-orange ml-auto transition-colors"
+          >
+            {bioCopied ? 'Copied ✓' : 'Copy'}
+          </button>
         </div>
-        <p className="font-mono text-[10px] uppercase text-ink/40 mb-4">
-          {bioView === 'short' ? '80 words' : '310 words'} · third person, copy-paste ready
-        </p>
         <p className="text-lg md:text-xl leading-snug font-medium mb-5">{BIO_BRIEF}</p>
         {bioView === 'full' &&
           BIO_EXTENDED.map((p, i) => (
@@ -99,7 +145,7 @@ const Epk = () => {
     ),
 
     music: (
-      <Section key="music" id="music" title="Recordings">
+      <Section key="music" id="music" title="Recordings" note="streaming now">
         <iframe
           title="Nick Rains on Spotify"
           src={LINKS.spotifyArtistEmbed}
@@ -109,10 +155,6 @@ const Epk = () => {
           loading="lazy"
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         />
-        <div className="flex gap-5 mt-3 font-mono text-xs uppercase">
-          <a href={LINKS.spotify} target="_blank" rel="noopener noreferrer" className="underline hover:text-orange">Spotify</a>
-          <a href={LINKS.appleMusic} target="_blank" rel="noopener noreferrer" className="underline hover:text-orange">Apple Music</a>
-        </div>
       </Section>
     ),
 
@@ -144,12 +186,15 @@ const Epk = () => {
 
     photos: (
       <Section key="photos" id="photos" title="Photos" note="tap to download">
-        <div className="flex gap-1 overflow-x-auto snap-x snap-mandatory -mx-5 md:-mx-10 px-5 md:px-10 pb-2">
-          {['g4', 'g9', 'g5', 'g1', 'g2', 'g6', 'g7', 'g8', 'g3'].map((g) => (
-            <a key={g} href={`/images/gallery/${g}.jpg`} download className="snap-start shrink-0">
+        <div
+          ref={photoStripRef}
+          className="flex gap-1 overflow-x-auto snap-x snap-mandatory -mx-5 md:-mx-10 px-5 md:px-10 pb-2"
+        >
+          {PHOTOS.map((ph) => (
+            <a key={ph.file} href={`/images/gallery/${ph.file}`} download={ph.name} className="snap-start shrink-0">
               <img
-                src={`/images/gallery/${g}.jpg`}
-                alt="Nick Rains press photo"
+                src={`/images/gallery/${ph.file}`}
+                alt={ph.alt}
                 loading="lazy"
                 className="h-72 md:h-96 w-auto object-cover"
               />
@@ -191,7 +236,7 @@ const Epk = () => {
     ),
 
     rider: (
-      <Section key="rider" id="rider" title="Tech">
+      <Section key="rider" id="rider" title="Tech" note="who brings what">
         <div className="mb-6">
           {[
             {
@@ -221,7 +266,7 @@ const Epk = () => {
           ))}
           <div className="grid grid-cols-[92px_1fr] gap-x-3 gap-y-1.5 px-3 text-sm">
             <span className="font-mono text-[10px] font-bold uppercase text-ink/50 pt-0.5">Set lengths</span>
-            <span>Single 45-min set → full 4-hour night</span>
+            <span>45 minutes to 4 hours</span>
             <span className="font-mono text-[10px] font-bold uppercase text-ink/50 pt-0.5">References</span>
             <span>Client references on request</span>
           </div>
@@ -270,19 +315,17 @@ const Epk = () => {
 
   return (
     <div className="grain speckle text-ink min-h-screen">
-      {/* Ticker */}
-      <div className="bg-olive text-cream font-mono text-[11px] tracking-wide text-center py-1.5 px-3 uppercase">
-        Now booking — Nashville &amp; beyond · solo acoustic to 7-piece band · {CONTACT.phone}
-      </div>
-
       {/* Header — the face, then everything a buyer needs before scrolling */}
       <header className="max-w-4xl mx-auto">
-        {/* Mobile: full-width portrait hero */}
-        <img
-          src="/images/headshot.jpg"
-          alt="Nick Rains"
-          className="w-full h-[48vh] object-cover object-top md:hidden"
-        />
+        {/* Mobile: full-width portrait hero with welcome-in + parallax */}
+        <div className="md:hidden overflow-hidden h-[48vh]">
+          <img
+            ref={heroRef}
+            src="/images/headshot.jpg"
+            alt="Nick Rains"
+            className="hero-in w-full h-full object-cover object-top will-change-transform"
+          />
+        </div>
 
         <div className="px-5 md:px-10 pt-5 pb-8">
           <div className="hidden md:flex justify-between items-start mb-5">
@@ -312,17 +355,14 @@ const Epk = () => {
               <p className="font-mono text-xs uppercase text-ink/60 mb-3">
                 {HOOK.genre} · {HOOK.base}
               </p>
-              <p className="text-lg md:text-xl font-medium max-w-xl mb-5">{HOOK.line}</p>
-              <div className="grid grid-cols-2 gap-2 max-w-md">
-                <a href={`mailto:${CONTACT.email}`} className="btn text-center !px-3">Email booking</a>
-                <a href={CONTACT.phoneHref} className="btn btn-ghost text-center !px-3">{CONTACT.phone}</a>
-              </div>
+              <p className="display text-2xl md:text-3xl max-w-xl mb-5">{HOOK.quote}</p>
+              <a href={`mailto:${CONTACT.email}?subject=Booking inquiry — Nick Rains`} className="btn inline-block !px-8">
+                Book Nick Rains
+              </a>
             </div>
-            <img
-              src="/images/headshot.jpg"
-              alt="Nick Rains"
-              className="film hidden md:block w-full h-56 object-cover object-top"
-            />
+            <figure className="polaroid rotate-2 hidden md:block">
+              <img src="/images/headshot.jpg" alt="Nick Rains" className="film w-full h-52 object-cover object-top" />
+            </figure>
           </div>
         </div>
       </header>
@@ -334,12 +374,12 @@ const Epk = () => {
       <footer className="torn bg-olive text-cream mt-10">
         <div className="px-5 md:px-10 pt-16 pb-4 max-w-4xl mx-auto">
           <h2 className="display text-5xl md:text-6xl mb-6">Let&rsquo;s hold a date.</h2>
-          <div className="flex flex-wrap gap-4 items-center mb-10">
-            <a href={`mailto:${CONTACT.email}`} className="btn">{CONTACT.email}</a>
+          <div className="flex flex-wrap gap-3 items-center mb-10">
+            <a href={`mailto:${CONTACT.email}?subject=Booking inquiry — Nick Rains`} className="btn">Book Nick Rains</a>
             <a href={CONTACT.phoneHref} className="btn btn-ghost">{CONTACT.phone}</a>
           </div>
-          <div className="flex flex-wrap justify-between gap-4 border-t border-cream/25 pt-5 font-mono text-[11px] uppercase text-cream/60">
-            <span>Booking &amp; inquiries — Nicholas Rains, independent</span>
+          <div className="flex flex-wrap justify-between gap-x-4 gap-y-2 border-t border-cream/25 pt-5 pb-3 font-mono text-[11px] text-cream/60">
+            <a href={`mailto:${CONTACT.email}`} className="underline hover:text-orange break-all">{CONTACT.email}</a>
             <Link to="/" className="underline hover:text-orange">nickrainsmusic.com</Link>
           </div>
         </div>

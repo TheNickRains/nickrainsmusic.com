@@ -41,7 +41,7 @@ export const LINKS = {
 export const HOOK = {
   genre: 'Indie-folk / Americana',
   base: 'Nashville, TN',
-  line: 'Solo acoustic to a seven-piece band — one booking, sized to the room.',
+  quote: '“I’d rather be IRL.”',
 }
 
 // Brief bio (50–100 words, third person, strongest recent credential first). DRAFT — Nick edits.
