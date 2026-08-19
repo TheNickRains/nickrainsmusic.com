@@ -38,6 +38,19 @@ const Section = ({
   </section>
 )
 
+// Real names — nobody downloads a "g6.jpg"
+const PHOTOS = [
+  { file: 'g4.jpg', name: 'Nick-Rains-Press-Portrait.jpg', alt: 'Nick Rains — press portrait' },
+  { file: 'g9.jpg', name: 'Nick-Rains-Catbird-Festival-by-Kevin-Ferguson.jpg', alt: 'Nick Rains at Catbird Music Festival, by Kevin Ferguson' },
+  { file: 'g5.jpg', name: 'Nick-Rains-On-Stage.jpg', alt: 'Nick Rains on stage' },
+  { file: 'g1.jpg', name: 'Nick-Rains-Live-01.jpg', alt: 'Nick Rains live' },
+  { file: 'g2.jpg', name: 'Nick-Rains-Live-02.jpg', alt: 'Nick Rains live' },
+  { file: 'g6.jpg', name: 'Nick-Rains-On-The-Road.jpg', alt: 'Nick Rains on the road' },
+  { file: 'g7.jpg', name: 'Nick-Rains-Live-03.jpg', alt: 'Nick Rains live' },
+  { file: 'g8.jpg', name: 'Nick-Rains-Live-04.jpg', alt: 'Nick Rains live' },
+  { file: 'g3.jpg', name: 'Nick-Rains-Live-05.jpg', alt: 'Nick Rains live' },
+]
+
 const AUDIENCE_SEGMENTS = ['venues', 'listening', 'agency'] as const
 
 const Epk = () => {
