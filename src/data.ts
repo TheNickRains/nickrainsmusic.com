@@ -81,8 +81,8 @@ export const CONFIGS = [
 export const DRAW = [
   { fact: 'The Viper Room', where: 'West Hollywood, CA' },
   { fact: 'Catbird Music Festival', where: '2023' },
-  { fact: '500+ direct-email fan list', where: 'and growing' },
   { fact: 'On tour full-time for the past two years — van life, with his wife and son', where: 'ongoing' },
+  { fact: '500+ direct-email fan list', where: 'and growing' },
 ]
 
 export const CADENCE = 'Performing weekly — Nashville & regional'
