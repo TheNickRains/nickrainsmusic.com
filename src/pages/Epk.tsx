@@ -106,7 +106,7 @@ const Epk = () => {
   }, [])
 
   const copyBio = async () => {
-    const text = bioView === 'short' ? BIO_BRIEF : `${BIO_BRIEF}\n\n${BIO_EXTENDED.join('\n\n')}`
+    const text = bioView === 'short' ? BIO_BRIEF : BIO_EXTENDED.join('\n\n')
     try {
       await navigator.clipboard.writeText(text.replace(/\n(?!\n)/g, ' '))
       setBioCopied(true)
@@ -142,18 +142,20 @@ const Epk = () => {
               {v}
             </button>
           ))}
-          <button
-            onClick={copyBio}
-            className="font-mono text-[11px] uppercase px-3 py-1.5 border border-ink/30 hover:border-orange hover:text-orange ml-auto transition-colors"
-          >
-            {bioCopied ? 'Copied ✓' : 'Copy'}
-          </button>
         </div>
-        <p className="text-lg md:text-xl leading-snug font-medium mb-5">{BIO_BRIEF}</p>
-        {bioView === 'full' &&
+        {bioView === 'short' ? (
+          <p className="text-lg md:text-xl leading-snug font-medium mb-4">{BIO_BRIEF}</p>
+        ) : (
           BIO_EXTENDED.map((p, i) => (
-            <p key={i} className="text-ink/70 leading-relaxed mb-4">{p}</p>
-          ))}
+            <p key={i} className="text-ink/80 leading-relaxed mb-4">{p}</p>
+          ))
+        )}
+        <button
+          onClick={copyBio}
+          className="font-mono text-[11px] uppercase px-3 py-1.5 border border-ink/30 hover:border-orange hover:text-orange transition-colors"
+        >
+          {bioCopied ? 'Copied ✓' : 'Copy'}
+        </button>
       </Section>
     ),
 
