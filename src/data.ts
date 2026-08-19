@@ -41,7 +41,7 @@ export const LINKS = {
 export const HOOK = {
   genre: 'Indie-folk / Americana',
   base: 'Nashville, TN',
-  line: 'One act that scales from solo acoustic to a seven-piece band — fully self-contained sound.',
+  line: 'Solo acoustic to a seven-piece band — one booking, sized to the room.',
 }
 
 // Brief bio (50–100 words, third person, strongest recent credential first). DRAFT — Nick edits.

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { CONTACT, LINKS, HOOK, BIO_BRIEF, BIO_EXTENDED, CONFIGS, DRAW, CADENCE } from '../data'
 
@@ -26,10 +26,14 @@ const Section = ({
   id, title, note, children,
 }: { id: string; title: string; note?: string; children: React.ReactNode }) => (
   <section id={id} className="px-5 md:px-10 py-10 max-w-4xl mx-auto w-full">
-    <h2 className="section-head mb-6">
-      <span>{title}</span>
-      {note && <span className="note">{note}</span>}
-    </h2>
+    <div className="flex items-baseline gap-4 border-b border-ink pb-2 mb-6">
+      <h2 className="font-mono text-xs font-bold uppercase tracking-[0.14em] whitespace-nowrap">
+        ● {title}
+      </h2>
+      {note && (
+        <span className="font-mono text-[11px] text-ink/45 ml-auto text-right truncate">{note}</span>
+      )}
+    </div>
     {children}
   </section>
 )
@@ -52,6 +56,7 @@ const Epk = () => {
         ? forParam
         : 'standard'
   const showSwitcher = params.get('preview') !== null
+  const [bioView, setBioView] = useState<'short' | 'full'>('short')
   const base = location.pathname.startsWith('/epk') ? '/epk' : ''
   const goTo = (a: Audience) =>
     navigate(`${a === 'standard' ? base || '/' : `${base}/${a}`}?preview`)
@@ -68,14 +73,25 @@ const Epk = () => {
 
   const sections: Record<string, React.ReactNode> = {
     bio: (
-      <Section
-        key="bio"
-        id="bio"
-        title="The story"
-        note={audience === 'listening' || audience === 'standard' ? 'brief · 80 words + extended · 230 words' : '80 words'}
-      >
+      <Section key="bio" id="bio" title="The story">
+        <div className="flex items-center gap-1 mb-1">
+          {(['short', 'full'] as const).map((v) => (
+            <button
+              key={v}
+              onClick={() => setBioView(v)}
+              className={`font-mono text-[11px] uppercase px-3 py-1.5 border transition-colors ${
+                bioView === v ? 'bg-ink text-cream border-ink' : 'border-ink/30 hover:border-ink'
+              }`}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+        <p className="font-mono text-[10px] uppercase text-ink/40 mb-4">
+          {bioView === 'short' ? '80 words' : '310 words'} · third person, copy-paste ready
+        </p>
         <p className="text-lg md:text-xl leading-snug font-medium mb-5">{BIO_BRIEF}</p>
-        {(audience === 'listening' || audience === 'standard') &&
+        {bioView === 'full' &&
           BIO_EXTENDED.map((p, i) => (
             <p key={i} className="text-ink/70 leading-relaxed mb-4">{p}</p>
           ))}
@@ -83,7 +99,7 @@ const Epk = () => {
     ),
 
     music: (
-      <Section key="music" id="music" title="Recordings" note="strongest first">
+      <Section key="music" id="music" title="Recordings">
         <iframe
           title="Nick Rains on Spotify"
           src={LINKS.spotifyArtistEmbed}
@@ -127,24 +143,27 @@ const Epk = () => {
     ),
 
     photos: (
-      <Section key="photos" id="photos" title="Photos" note="click to download · hi-res on request">
-        <div className="flex flex-wrap justify-center gap-6 py-4">
-          {[
-            { g: 'g5', cap: 'On stage', r: '-rotate-2' },
-            { g: 'g4', cap: 'Press', r: 'rotate-1' },
-            { g: 'g9', cap: 'Catbird Festival ’23 · K. Ferguson', r: '-rotate-1' },
-          ].map((p) => (
-            <a key={p.g} href={`/images/gallery/${p.g}.jpg`} download className={`polaroid ${p.r} w-56 md:w-64`}>
-              <img src={`/images/gallery/${p.g}.jpg`} alt={`Nick Rains — ${p.cap}`} loading="lazy" className="film w-full h-56 md:h-64 object-cover" />
-              <figcaption>{p.cap}</figcaption>
+      <Section key="photos" id="photos" title="Photos" note="tap to download">
+        <div className="flex gap-1 overflow-x-auto snap-x snap-mandatory -mx-5 md:-mx-10 px-5 md:px-10 pb-2">
+          {['g4', 'g9', 'g5', 'g1', 'g2', 'g6', 'g7', 'g8', 'g3'].map((g) => (
+            <a key={g} href={`/images/gallery/${g}.jpg`} download className="snap-start shrink-0">
+              <img
+                src={`/images/gallery/${g}.jpg`}
+                alt="Nick Rains press photo"
+                loading="lazy"
+                className="h-72 md:h-96 w-auto object-cover"
+              />
             </a>
           ))}
         </div>
+        <p className="font-mono text-[10px] uppercase text-ink/40 mt-2">
+          Hi-res on request · festival photos: Kevin Ferguson
+        </p>
       </Section>
     ),
 
     draw: (
-      <Section key="draw" id="draw" title="Track record" note="the honest ledger">
+      <Section key="draw" id="draw" title="Highlights" note="venues · residencies · reach">
         <div>
           {DRAW.map((d) => (
             <div key={d.fact} className="row-line border-ink/25 flex justify-between gap-6 items-baseline py-3">
@@ -172,20 +191,41 @@ const Epk = () => {
     ),
 
     rider: (
-      <Section key="rider" id="rider" title="Tech" note="self-contained">
-        <p className="text-lg font-medium mb-2">
-          Fully self-contained: Bose S1 Pro+ rig travels with the act. Solo &amp; duo dates need one
-          power outlet and a 6×6 corner — set up in under 30 minutes, indoors or out.
-        </p>
-        <p className="text-sm text-ink/60 mb-2">
-          Band dates (3–7 pc): house PA, 16 channels, 4 monitor mixes — bass, keys &amp; lead guitar all sing backup. Input list &amp; stage plot sent at booking.
-        </p>
-        <p className="text-sm text-ink/60 mb-6">
-          <span className="font-mono text-xs font-bold uppercase text-ink/80">Set lengths:</span> single 45-min
-          sets through full 4-hour nights, no dead air.{' '}
-          <span className="font-mono text-xs font-bold uppercase text-ink/80">References:</span> client
-          references available on request.
-        </p>
+      <Section key="rider" id="rider" title="Tech">
+        <div className="mb-6">
+          {[
+            {
+              config: 'Solo / Duo',
+              artist: 'Full PA (Bose S1 Pro+), mics, all cabling',
+              venue: 'One 120V outlet · 6×6 ft space',
+              note: 'Set up in under 30 min, indoors or out',
+            },
+            {
+              config: 'Band · 3–7 pc',
+              artist: 'Players & instruments · bass, keys, lead gtr all sing',
+              venue: 'PA with subs · 16-ch console · 4 monitor mixes · FOH engineer',
+              note: 'Input list & stage plot below',
+            },
+          ].map((r) => (
+            <div key={r.config} className="border-2 border-ink mb-3">
+              <p className="display text-lg px-3 py-1.5 border-b-2 border-ink">{r.config}</p>
+              <div className="grid grid-cols-[92px_1fr] gap-x-3 gap-y-1.5 p-3 text-sm">
+                <span className="font-mono text-[10px] font-bold uppercase text-ink/50 pt-0.5">Artist brings</span>
+                <span>{r.artist}</span>
+                <span className="font-mono text-[10px] font-bold uppercase text-ink/50 pt-0.5">Venue brings</span>
+                <span>{r.venue}</span>
+                <span className="font-mono text-[10px] font-bold uppercase text-ink/50 pt-0.5">Note</span>
+                <span className="text-ink/60">{r.note}</span>
+              </div>
+            </div>
+          ))}
+          <div className="grid grid-cols-[92px_1fr] gap-x-3 gap-y-1.5 px-3 text-sm">
+            <span className="font-mono text-[10px] font-bold uppercase text-ink/50 pt-0.5">Set lengths</span>
+            <span>Single 45-min set → full 4-hour night</span>
+            <span className="font-mono text-[10px] font-bold uppercase text-ink/50 pt-0.5">References</span>
+            <span>Client references on request</span>
+          </div>
+        </div>
         <div className="border-2 border-dashed border-ink/40 p-4">
           <p className="font-mono text-[11px] font-bold uppercase mb-2">Downloadable files</p>
           <a href={LINKS.techRiderPdf} download className="row-line border-ink/20 flex justify-between py-2 font-mono text-sm underline hover:text-orange">
@@ -235,49 +275,55 @@ const Epk = () => {
         Now booking — Nashville &amp; beyond · solo acoustic to 7-piece band · {CONTACT.phone}
       </div>
 
-      {/* Header — everything a buyer needs before scrolling */}
-      <header className="px-5 md:px-10 pt-5 pb-8 max-w-4xl mx-auto">
-        <div className="flex justify-between items-start mb-5">
-          <Link to="/">
-            <img src="/images/logo-black.png" alt="Nick Rains" className="h-9 w-auto" />
-          </Link>
-          {showSwitcher && (
-          <div className="flex gap-1 font-mono text-[10px] uppercase">
-            {(Object.keys(ORDER) as Audience[]).map((a) => (
-              <button
-                key={a}
-                onClick={() => goTo(a)}
-                className={`px-2.5 py-1 border transition-colors ${
-                  audience === a ? 'bg-ink text-cream border-ink' : 'border-ink/30 hover:border-ink'
-                }`}
-              >
-                {LABELS[a]}
-              </button>
-            ))}
-          </div>
-          )}
-        </div>
+      {/* Header — the face, then everything a buyer needs before scrolling */}
+      <header className="max-w-4xl mx-auto">
+        {/* Mobile: full-width portrait hero */}
+        <img
+          src="/images/headshot.jpg"
+          alt="Nick Rains"
+          className="w-full h-[48vh] object-cover object-top md:hidden"
+        />
 
-        <div className="grid md:grid-cols-[1fr_210px] gap-6 items-start">
-          <figure className="polaroid rotate-2 w-44 mx-auto mb-2 md:hidden">
-            <img src="/images/headshot.jpg" alt="Nick Rains" className="film w-full h-44 object-cover" />
-            <figcaption>Nashville, TN</figcaption>
-          </figure>
-          <div>
-            <h1 className="display text-[15vw] md:text-8xl mb-3">Nick Rains</h1>
-            <p className="font-mono text-xs uppercase text-ink/60 mb-3">
-              {HOOK.genre} · {HOOK.base}
-            </p>
-            <p className="text-lg md:text-xl font-medium max-w-xl mb-5">{HOOK.line}</p>
-            <div className="flex flex-wrap gap-3 items-center">
-              <a href={`mailto:${CONTACT.email}`} className="btn">Email booking</a>
-              <a href={CONTACT.phoneHref} className="font-mono text-sm underline hover:text-orange">{CONTACT.phone}</a>
+        <div className="px-5 md:px-10 pt-5 pb-8">
+          <div className="hidden md:flex justify-between items-start mb-5">
+            <Link to="/">
+              <img src="/images/logo-black.png" alt="Nick Rains" className="h-9 w-auto" />
+            </Link>
+            {showSwitcher && (
+            <div className="flex gap-1 font-mono text-[10px] uppercase">
+              {(Object.keys(ORDER) as Audience[]).map((a) => (
+                <button
+                  key={a}
+                  onClick={() => goTo(a)}
+                  className={`px-2.5 py-1 border transition-colors ${
+                    audience === a ? 'bg-ink text-cream border-ink' : 'border-ink/30 hover:border-ink'
+                  }`}
+                >
+                  {LABELS[a]}
+                </button>
+              ))}
             </div>
+            )}
           </div>
-          <figure className="polaroid rotate-2 hidden md:block">
-            <img src="/images/headshot.jpg" alt="Nick Rains" className="film w-full h-48 object-cover" />
-            <figcaption>Nashville, TN</figcaption>
-          </figure>
+
+          <div className="grid md:grid-cols-[1fr_210px] gap-6 items-start mt-4 md:mt-0">
+            <div>
+              <h1 className="display text-[15vw] md:text-8xl mb-3">Nick Rains</h1>
+              <p className="font-mono text-xs uppercase text-ink/60 mb-3">
+                {HOOK.genre} · {HOOK.base}
+              </p>
+              <p className="text-lg md:text-xl font-medium max-w-xl mb-5">{HOOK.line}</p>
+              <div className="grid grid-cols-2 gap-2 max-w-md">
+                <a href={`mailto:${CONTACT.email}`} className="btn text-center !px-3">Email booking</a>
+                <a href={CONTACT.phoneHref} className="btn btn-ghost text-center !px-3">{CONTACT.phone}</a>
+              </div>
+            </div>
+            <img
+              src="/images/headshot.jpg"
+              alt="Nick Rains"
+              className="film hidden md:block w-full h-56 object-cover object-top"
+            />
+          </div>
         </div>
       </header>
 
