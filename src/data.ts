@@ -41,7 +41,7 @@ export const LINKS = {
 export const HOOK = {
   genre: 'Indie-folk / Americana',
   base: 'Nashville, TN',
-  quote: 'Nick Rains can cast his spell over any audience — and we’re already huge fans.',
+  quote: '“Nick Rains can cast his spell over any audience — and we’re already huge fans.”',
   quoteSource: 'The Get Up · Nashville',
 }
 
