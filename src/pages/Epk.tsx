@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { CONTACT, LINKS, HOOK, BIO_BRIEF, BIO_EXTENDED, CONFIGS, DRAW, CADENCE } from '../data'
+import { CONTACT, LINKS, HOOK, BIO_BRIEF, BIO_EXTENDED, CONFIGS, DRAW } from '../data'
 
 type Audience = 'standard' | 'venues' | 'listening' | 'agency'
 
