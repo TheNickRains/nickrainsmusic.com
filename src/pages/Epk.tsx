@@ -38,17 +38,12 @@ const Section = ({
   </section>
 )
 
-// Real names — nobody downloads a "g6.jpg"
+// Curated: press shot leads; one photo per outfit/session; no short-hair era.
 const PHOTOS = [
-  { file: 'g4.jpg', name: 'Nick-Rains-Press-Portrait.jpg', alt: 'Nick Rains — press portrait' },
-  { file: 'g9.jpg', name: 'Nick-Rains-Catbird-Festival-by-Kevin-Ferguson.jpg', alt: 'Nick Rains at Catbird Music Festival, by Kevin Ferguson' },
-  { file: 'g5.jpg', name: 'Nick-Rains-On-Stage.jpg', alt: 'Nick Rains on stage' },
-  { file: 'g1.jpg', name: 'Nick-Rains-Live-01.jpg', alt: 'Nick Rains live' },
-  { file: 'g2.jpg', name: 'Nick-Rains-Live-02.jpg', alt: 'Nick Rains live' },
-  { file: 'g6.jpg', name: 'Nick-Rains-On-The-Road.jpg', alt: 'Nick Rains on the road' },
-  { file: 'g7.jpg', name: 'Nick-Rains-Live-03.jpg', alt: 'Nick Rains live' },
-  { file: 'g8.jpg', name: 'Nick-Rains-Live-04.jpg', alt: 'Nick Rains live' },
-  { file: 'g3.jpg', name: 'Nick-Rains-Live-05.jpg', alt: 'Nick Rains live' },
+  { src: '/images/headshot.jpg', name: 'Nick-Rains-Press-Photo.jpg', alt: 'Nick Rains — press photo' },
+  { src: '/images/gallery/g9.jpg', name: 'Nick-Rains-Catbird-Festival-by-Kevin-Ferguson.jpg', alt: 'Nick Rains at Catbird Music Festival, by Kevin Ferguson' },
+  { src: '/images/gallery/g6.jpg', name: 'Nick-Rains-Live-Acoustic.jpg', alt: 'Nick Rains live, acoustic' },
+  { src: '/images/gallery/g2.jpg', name: 'Nick-Rains-Night-Session.jpg', alt: 'Nick Rains — night session with electric guitar' },
 ]
 
 const AUDIENCE_SEGMENTS = ['venues', 'listening', 'agency'] as const
@@ -206,9 +201,9 @@ const Epk = () => {
           className="flex gap-1 overflow-x-auto snap-x snap-mandatory -mx-5 md:-mx-10 px-5 md:px-10 pb-2"
         >
           {PHOTOS.map((ph) => (
-            <a key={ph.file} href={`/images/gallery/${ph.file}`} download={ph.name} className="snap-start shrink-0">
+            <a key={ph.src} href={ph.src} download={ph.name} className="snap-start shrink-0">
               <img
-                src={`/images/gallery/${ph.file}`}
+                src={ph.src}
                 alt={ph.alt}
                 loading="lazy"
                 className="h-72 md:h-96 w-auto object-cover"
@@ -217,7 +212,7 @@ const Epk = () => {
           ))}
         </div>
         <p className="font-mono text-[10px] uppercase text-ink/40 mt-2">
-          Hi-res on request · festival photos: Kevin Ferguson
+          Hi-res on request · festival photo: Kevin Ferguson
         </p>
       </Section>
     ),
