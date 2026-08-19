@@ -368,7 +368,10 @@ const Epk = () => {
               <p className="font-mono text-xs uppercase text-ink/60 mb-3">
                 {HOOK.genre} · {HOOK.base}
               </p>
-              <p className="display text-2xl md:text-3xl max-w-xl mb-5">{HOOK.quote}</p>
+              <blockquote className="max-w-xl mb-5">
+                <p className="display text-2xl md:text-3xl mb-2">{HOOK.quote}</p>
+                <cite className="font-mono text-[11px] uppercase not-italic text-ink/50">— {HOOK.quoteSource}</cite>
+              </blockquote>
               <a href={`mailto:${CONTACT.email}?subject=Booking inquiry — Nick Rains`} className="btn inline-block !px-8">
                 Book Nick Rains
               </a>
