@@ -136,7 +136,7 @@ const Home = () => {
           </figure>
           <figure className="polaroid rotate-1 w-56 md:w-72 shrink-0 md:-mt-3">
             <img src="/images/gallery/g2.jpg" alt="Nick Rains — night session" className="film w-full h-64 md:h-80 object-cover" />
-            <figcaption>Nashville, TN</figcaption>
+            <figcaption>Night session</figcaption>
           </figure>
           <figure className="polaroid rotate-3 w-40 md:w-48 shrink-0 md:mt-5">
             <img src="/images/gallery/g9.jpg" alt="Catbird Music Festival" className="film w-full h-40 md:h-48 object-cover" />

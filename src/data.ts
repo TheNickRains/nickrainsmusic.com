@@ -40,25 +40,25 @@ export const LINKS = {
 // Header hook — visible with booking contact before any scrolling
 export const HOOK = {
   genre: 'Indie-folk / Americana',
-  base: 'Nashville, TN',
+  base: 'French Quarter-born · on tour full-time',
   quote: '“Nick Rains can cast his spell over any audience — and we’re already huge fans.”',
   quoteSource: 'The Get Up · Nashville',
 }
 
 // Brief bio (50–100 words, third person, strongest recent credential first). DRAFT — Nick edits.
-export const BIO_BRIEF = `Nick Rains is a Louisiana-raised, Nashville-based singer-songwriter who sold out
-the Viper Room in West Hollywood on the strength of fifteen years of relentless live work. From busking
-French Quarter street corners as a teenager to residencies across the Austin and San Antonio corridor,
-he's built a 1,000-song repertoire and a reputation for holding any room — solo acoustic or with a full
-band — for as long as the night needs.`
+export const BIO_BRIEF = `Nick Rains got his start in the French Quarter and his education busking street
+corners across America. Fifteen years of relentless live work later — a sold-out night at the Viper Room,
+residencies across the Austin and San Antonio corridor — he tours full-time with a 1,000-song repertoire
+and a reputation for holding any room, solo acoustic or with a full band, for as long as the night needs.`
 
 // Extended bio (150–250 words). DRAFT — Nick edits.
 export const BIO_EXTENDED = [
   `Nick Rains learned to work a crowd the hardest way there is: busking French Quarter street corners in
 New Orleans as a teenager, where nobody has to stop and listen. Fifteen years later, that education shows.
 It carried him west to Los Angeles — where he sold out a headline night at the Viper Room — through
-multi-month residencies across the Texas Hill Country and the Austin–San Antonio corridor, and finally
-to Nashville, where he's now based.`,
+multi-month residencies across the Texas Hill Country and the Austin–San Antonio corridor, and into
+a life lived fully on the road: two years and counting of full-time touring, with his wife and son
+along for every mile.`,
   `His songs are acoustic-driven and specific: faith, marriage, love, and loss, written from the road and
 rooted in the places that shaped him. Listeners hear the lineage of Tyler Childers and Passenger — writing
 that makes you feel like you were in the room when it happened.`,
