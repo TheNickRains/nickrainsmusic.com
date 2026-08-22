@@ -364,7 +364,7 @@ const Epk = () => {
             <div>
               <h1 className="display text-[15vw] md:text-8xl mb-3">Nick Rains</h1>
               <p className="font-mono text-xs uppercase text-ink/60 mb-3">
-                {HOOK.genre} · {HOOK.base}
+                {HOOK.genre}
               </p>
               <blockquote className="max-w-xl mb-5">
                 <p className="display normal-case text-2xl md:text-3xl mb-2">{HOOK.quote}</p>

@@ -40,7 +40,7 @@ export const LINKS = {
 // Header hook — visible with booking contact before any scrolling
 export const HOOK = {
   genre: 'Indie-folk / Americana',
-  base: 'French Quarter-born · on tour full-time',
+  base: '',
   quote: '“Nick Rains can cast his spell over any audience — and we’re already huge fans.”',
   quoteSource: 'The Get Up · Nashville',
 }
