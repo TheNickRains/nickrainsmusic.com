@@ -46,26 +46,29 @@ export const HOOK = {
 }
 
 // Brief bio (50–100 words, third person, strongest recent credential first). DRAFT — Nick edits.
-export const BIO_BRIEF = `Nick Rains got his start in the French Quarter and his education busking street
-corners across America. Fifteen years of relentless live work later — a sold-out night at the Viper Room,
-residencies across the Austin and San Antonio corridor — he tours full-time with a 1,000-song repertoire
-and a reputation for holding any room, solo acoustic or with a full band, for as long as the night needs.`
+export const BIO_BRIEF = `Nick Rains got his start in the French Quarter and his education busking
+street corners across America. Fifteen years later, he writes soul-leaning Americana that carries the
+full weight of a life lived on the road — faith, marriage, love, and loss, set in the actual places
+where they happened. Two years into touring full-time with his wife and son, he's now recording his
+debut full-length: the document of everything the road has taught him.`
 
 // Extended bio (150–250 words). DRAFT — Nick edits.
 export const BIO_EXTENDED = [
-  `Nick Rains learned to work a crowd the hardest way there is: busking French Quarter street corners in
-New Orleans as a teenager, where nobody has to stop and listen. Fifteen years later, that education shows.
-It carried him west to Los Angeles — where he sold out a headline night at the Viper Room — through
-multi-month residencies across the Texas Hill Country and the Austin–San Antonio corridor, and into
-a life lived fully on the road: two years and counting of full-time touring, with his wife and son
-along for every mile.`,
-  `His songs are acoustic-driven and specific: faith, marriage, love, and loss, written from the road and
-rooted in the places that shaped him. Listeners hear the lineage of Tyler Childers and Passenger — writing
-that makes you feel like you were in the room when it happened.`,
-  `On stage he's a chameleon by necessity and a multi-instrumentalist by habit, with a repertoire north of
-1,000 songs spanning Nashville and Texas country, rock, and modern hits. He performs weekly — solo,
-duo, or with his band — and travels fully self-contained. His debut full-length album is currently in
-progress in Nashville, built from fifteen years of road-tested material.`,
+  `Nick Rains learned to work a crowd the hardest way there is: busking the French Quarter, where
+nobody has to stop and listen. The street corners of America became his conservatory — fifteen years
+of them, from New Orleans to a sold-out night at the Viper Room in West Hollywood, through
+multi-month residencies across the Texas Hill Country, and into the life he lives now: two years
+and counting on the road full-time, with his wife and son along for every mile.`,
+  `The sound came from a record collection that ran from Ella Fitzgerald and Louis Armstrong to
+Chopin to Nirvana, with the California '70s in between — and it shows. Rains sings first and
+explains later: soul phrasing carried on Americana songcraft, dynamics learned from grunge,
+patience learned from the classical records. The songs themselves are specific — faith, marriage,
+love, and loss, set in the places where they happened — written so a listener feels like they
+were in the room.`,
+  `Two singles, "Midnight Sun" and "The One I Want Is You," are streaming now, and his debut
+full-length is in progress — the recorded document of everything the road has taught him. The live
+reputation is already traveling ahead of it. As Nashville's The Get Up put it: he "can cast his
+spell over any audience."`,
 ]
 
 export const CONFIGS = [
