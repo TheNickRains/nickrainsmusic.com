@@ -63,7 +63,7 @@ const Links = () => {
     if (navigator.share) {
       navigator.share({
         title: 'Nick Rains',
-        text: 'Indie-folk from Louisiana, living in Nashville.',
+        text: 'Nick Rains — Songwriter. Artist. Producer.',
         url: window.location.href,
       }).catch(() => {})
     } else {
