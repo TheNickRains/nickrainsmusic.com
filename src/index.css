@@ -83,6 +83,17 @@ body {
   filter: sepia(0.22) contrast(1.04) saturate(0.92);
 }
 
+/* Marquee scroll for overflowing player titles */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 9s linear infinite;
+}
+
 /* Mono index label — "● SECTION" + optional right-hand note */
 .section-head {
   display: flex;

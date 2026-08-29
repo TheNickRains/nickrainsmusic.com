@@ -8,6 +8,8 @@ import Links from './pages/Links'
 import Songs from './pages/Songs'
 import Queue from './pages/Queue'
 import Join from './pages/Join'
+import Live from './pages/Live'
+import Checkin from './pages/Checkin'
 import { LINKS } from './data'
 
 if ('serviceWorker' in navigator) {
@@ -20,6 +22,7 @@ if ('serviceWorker' in navigator) {
 //   songs.  → bare repertoire browser (no live-show features)
 //   epk.    → the industry press kit
 //   join.   → lead capture funnel
+//   live.   → show landing pages (live.nickrainsmusic.com/city/MMDDYY)
 //   tip. / donate. → straight to Stripe
 const sub = window.location.hostname.split('.')[0]
 
@@ -40,6 +43,10 @@ const routes =
     <Routes>
       <Route path="*" element={<Join />} />
     </Routes>
+  ) : sub === 'live' ? (
+    <Routes>
+      <Route path="*" element={<Live />} />
+    </Routes>
   ) : (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -48,6 +55,8 @@ const routes =
       <Route path="/songs" element={<Songs />} />
       <Route path="/queue" element={<Queue />} />
       <Route path="/join" element={<Join />} />
+      {/* Door ticket scanner (Nick only — needs ?key=<ADMIN_KEY>) */}
+      <Route path="/checkin" element={<Checkin />} />
       {/* Familiar aliases for the show-night links page */}
       <Route path="/linktree" element={<Navigate to="/links" replace />} />
       <Route path="/club" element={<Navigate to="/links" replace />} />

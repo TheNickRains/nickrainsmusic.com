@@ -14,6 +14,7 @@ Local dev: `npm run dev -- --host` (vite, :5173, hot reload, proxies /api)
 | `/queue?key=<ADMIN_KEY>` | Nick | + PLAYED buttons (tap song title → Ultimate Guitar chart), goal admin (add w/ autocomplete, price, Seed +$5/20/50, delete, clear all), two-tap **End the show** (sweeps open phones → `/#fanlist`, clears queue + goals). |
 | `/join` | Capture | The Club funnel (conversational, explicit opt-ins, "Tell a friend" share CTA). Variants: `?src=kiosk` (XL, auto-reset 8s) · `live` (default — printed QR) · `digital` (IG bio) · `stripe` (post-tip entry — set Stripe payment-link confirmation redirect here). |
 | `/links` | Linktree replacement | Show-night hub: Join The Club, tip jar, song list, social icons, music/tour, "book me" → EPK. |
+| `/checkin?key=<ADMIN_KEY>` | Nick (door) | Camera QR ticket scanner. Green flash = in (marks used, shows running tally) · red = already scanned (with time) / invalid. Re-arms after 2s; manual code entry fallback; screen wake lock. |
 | `/epk` | Industry | Press kit, outline order (headshot + contact above fold → bios by length → recordings → config-labeled video → downloadable photos → track record → tech + downloads → dates). Audience orderings are clean routes: `/epk/venues` · `/epk/listening` · `/epk/agency` (on the subdomain: `epk.nickrainsmusic.com/venues` etc; legacy `?for=` still works). The audience switcher is hidden from buyers — append `?preview` to show it. |
 
 Redirects: `/linktree`, `/club` → `/links` · `/entertainment` → `/epk?for=venues` · `/artist` → `/epk?for=listening` · `*` → `/`.
@@ -23,6 +24,7 @@ Redirects: `/linktree`, `/club` → `/links` · `/entertainment` → `/epk?for=v
 - `songs.` — bare repertoire browser (no requests/queue/goals/tips — buyer-facing)
 - `epk.` — press kit
 - `join.` — capture funnel (default src=live)
+- `live.` — show landing pages (`live.nickrainsmusic.com/city/MMDDYY`). Story-first: family-on-the-road narrative, unreleased track player, ICS calendar download, tickets secondary. Add shows in `src/pages/Live.tsx` SHOWS map. QR code points here; Cloudflare Analytics tracks scans by path. Ticketed shows: `ticketUrl` = a Stripe Payment Link carrying metadata `show_id` = the SHOWS key, and add the show to `functions/api/_shows.ts` (feeds the ticket email + door scanner).
 - `tip.` / `donate.` — redirect to Stripe tip link
 
 Note: localStorage (device id, tip verification) does not cross subdomains.
@@ -36,7 +38,8 @@ Note: localStorage (device id, tip verification) does not cross subdomains.
 | `POST /api/played` | ADMIN_KEY | Mark request played |
 | `GET /api/goals` | public | Active goal campaigns, price DESC (tiers: $250+ grand / $100+ major / standard) |
 | `POST /api/goals` | ADMIN_KEY | `create` / `seed` (salt the jar) / `delete` / `clear` |
-| `POST /api/webhook/stripe` | Stripe signature | Boosts (`client_reference_id` = request id), goal chip-ins (`goal-<id>`, auto-unlock at 100%), device-verified tips (`_d_<device>` suffix → `tips` table) |
+| `POST /api/webhook/stripe` | Stripe signature | Boosts (`client_reference_id` = request id), goal chip-ins (`goal-<id>`, auto-unlock at 100%), device-verified tips (`_d_<device>` suffix → `tips` table), ticket purchases (`metadata.show_id` → `tickets` rows + QR email via Resend; quantity derived from amount ÷ $10) |
+| `POST /api/checkin` | ADMIN_KEY | Door scan `{key, ticketId}` → `valid` (marks used, returns tally) / `used` (+`usedAt`) / `invalid` |
 | `GET /api/tipped?device=` | public | Has this device COMPLETED a payment in 6h (drives tip nudge) |
 | `GET /api/show` | public | Last sweep timestamp (pages redirect only if open during sweep) |
 | `POST /api/show` | ADMIN_KEY | `end-show`: broadcast sweep + clear queue & goals |
@@ -45,7 +48,7 @@ Note: localStorage (device id, tip verification) does not cross subdomains.
 
 ## Data (D1 `nick-rains-queue`, `schema.sql`)
 
-`requests` · `goals` · `tips` (webhook-verified, per device) · `fans` (site copy; **Google Sheets stays the CRM source of truth** via GAS forward) · `settings` (sweep timestamp).
+`requests` · `goals` · `tips` (webhook-verified, per device) · `fans` (site copy; **Google Sheets stays the CRM source of truth** via GAS forward) · `settings` (sweep timestamp) · `tickets` (QR door tickets — issued by the Stripe webhook, burned by `/api/checkin`).
 
 ## Files
 
@@ -60,6 +63,6 @@ Note: localStorage (device id, tip verification) does not cross subdomains.
 1. `git init` + first commit (do this first)
 2. `wrangler login` → create D1 → real `database_id` in `wrangler.toml` → apply `schema.sql`
 3. Secrets: `ADMIN_KEY`, `STRIPE_WEBHOOK_SECRET`, optional `GAS_TALLY_URL`, `GAS_AUTH_TOKEN`, `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_TO`
-4. Stripe: webhook → `https://<domain>/api/webhook/stripe` (`checkout.session.completed`); payment-link confirmation redirect → `join.nickrainsmusic.com?src=stripe`; optional dedicated "Boost a Song" link → `LINKS.songRequestLink` in `src/data.ts`
-5. Custom domains: apex + `songs.` `epk.` `join.` `tip.`
+4. Stripe: webhook → `https://<domain>/api/webhook/stripe` (`checkout.session.completed`); payment-link confirmation redirect → `join.nickrainsmusic.com?src=stripe`; optional dedicated "Boost a Song" link → `LINKS.songRequestLink` in `src/data.ts`; per-show $10 ticket payment link with metadata `show_id` = the SHOWS key (optional `price_cents` if not $10) → `ticketUrl` in `src/pages/Live.tsx`
+5. Custom domains: apex + `songs.` `epk.` `join.` `live.` `tip.`
 6. Print new QRs (`/links`, `/join`), then cancel Linktree + Tally
