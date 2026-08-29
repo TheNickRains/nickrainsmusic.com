@@ -35,8 +35,8 @@ const SHOWS: Record<string, ShowData> = {
     showAt: '2026-09-05T19:00:00-05:00',
     capacity: 75,
     pricing: {
-      presale: { cents: 800, label: '$8', endsAt: '2026-09-04T23:59:00-05:00' },
-      door: { cents: 1000, label: '$10' },
+      presale: { cents: 1000, label: '$10', endsAt: '2026-09-04T23:59:00-05:00' },
+      door: { cents: 1500, label: '$15' },
     },
     track: {
       title: 'Small House',
@@ -81,6 +81,107 @@ function PauseIcon() {
 }
 
 
+// ─── Grain overlay (matches the hero's cinematic grain) ──────────────────────
+function Grain() {
+  return (
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E\")",
+        opacity: 0.13,
+        mixBlendMode: 'overlay',
+      }}
+    />
+  )
+}
+
+// ─── Lineup ──────────────────────────────────────────────────────────────────
+// The root of live.nickrainsmusic.com (no /city/date) — a poster of upcoming
+// shows. Was a dead "No show found"; now surfaces the SHOWS map as a list.
+function Lineup() {
+  const now = Date.now()
+  const shows = Object.entries(SHOWS)
+    .map(([key, s]) => ({ key, ...s }))
+    // keep a show visible until a few hours after start, then it drops off
+    .filter((s) => new Date(s.showAt).getTime() >= now - 4 * 3600 * 1000)
+    .sort((a, b) => new Date(a.showAt).getTime() - new Date(b.showAt).getTime())
+
+  return (
+    <div className="relative min-h-screen text-paper overflow-hidden" style={{ background: '#0d0e09' }}>
+      <Grain />
+      <div className="relative z-10 max-w-xl mx-auto px-6 pt-10 pb-16">
+        {/* Logo */}
+        <div className="flex justify-center mb-10">
+          <img
+            src="/images/logo-white.png"
+            alt="Nick Rains"
+            className="h-8 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+        </div>
+
+        {/* Title */}
+        <div className="text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-orange mb-2">On the road</p>
+          <h1 className="display text-[26vw] sm:text-[128px] text-paper leading-[0.8] tracking-[-0.01em]">LIVE</h1>
+        </div>
+
+        {/* Orange rule */}
+        <div className="flex items-center justify-center gap-3 my-8">
+          <div className="h-px w-10 bg-orange/50" />
+          <div className="h-[3px] w-[3px] rounded-full bg-orange" />
+          <div className="h-px w-10 bg-orange/50" />
+        </div>
+
+        {shows.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="font-mono text-sm uppercase tracking-[0.2em] text-paper/40 mb-7">No dates on the books right now</p>
+            <a
+              href="https://nickrainsmusic.com/#fanlist"
+              className="inline-block font-mono text-[11px] uppercase tracking-[0.2em] text-orange border border-orange/45 rounded-full px-6 py-3"
+            >
+              Join The Club — hear first →
+            </a>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {shows.map((s) => (
+              <a
+                key={s.key}
+                href={`/${s.key}`}
+                className="block border border-paper/12 rounded-lg px-5 py-4 hover:border-orange/50 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-orange mb-1.5">{s.date}</p>
+                    <p className="display text-2xl text-paper leading-tight truncate">{s.venue}</p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-paper/45 mt-1.5">
+                      {s.city}{s.time ? ` · ${s.time}` : ''}
+                    </p>
+                  </div>
+                  <svg width="8" height="14" viewBox="0 0 6 10" fill="none" className="flex-shrink-0">
+                    <path d="M1 1L5 5L1 9" stroke="#c65a1e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* Footer link home */}
+        <div className="text-center mt-12">
+          <a
+            href="https://nickrainsmusic.com"
+            className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper/35 hover:text-orange transition-colors"
+          >
+            nickrainsmusic.com
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Page ────────────────────────────────────────────────────────────────────
 export default function Live() {
   const path = window.location.pathname.replace(/^\//, '')
@@ -100,15 +201,9 @@ export default function Live() {
   }
 
 
-  if (!show) {
-    return (
-      <div className="grain speckle min-h-screen flex items-center justify-center text-ink">
-        <p className="font-mono text-sm uppercase tracking-widest text-ink/40">
-          No show found
-        </p>
-      </div>
-    )
-  }
+  // No /city/date match → the lineup of upcoming shows (also a friendly
+  // fallback for a stale/typo'd show URL).
+  if (!show) return <Lineup />
 
   const mapUrl = `https://maps.apple.com/?q=${encodeURIComponent(show.address)}`
 

@@ -35,8 +35,8 @@ export const SHOW_META: Record<string, ShowMeta> = {
     showAt: '2026-09-05T19:00:00-05:00',
     capacity: 75,
     pricing: {
-      presale: { cents: 800, label: '$8', endsAt: '2026-09-04T23:59:00-05:00' },
-      door: { cents: 1000, label: '$10' },
+      presale: { cents: 1000, label: '$10', endsAt: '2026-09-04T23:59:00-05:00' },
+      door: { cents: 1500, label: '$15' },
     },
   },
 }
