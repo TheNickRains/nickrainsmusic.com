@@ -17,6 +17,7 @@ interface Env {
 export async function onRequestGet({ request, env }: { request: Request; env: Env }) {
   const url = new URL(request.url)
   const showId = url.searchParams.get('show') || ''
+  const qtyParam = Math.max(1, parseInt(url.searchParams.get('qty') || '1', 10) || 1)
 
   const meta = SHOW_META[showId]
   if (!meta) return new Response('show not found', { status: 404 })
@@ -46,20 +47,18 @@ export async function onRequestGet({ request, env }: { request: Request; env: En
     presale?.endsAt && now < new Date(presale.endsAt).getTime() ? presale : door
 
   const cityShort = meta.city.split(',')[0].trim()
-  const maxQty = remaining != null ? Math.min(4, remaining) : 4
+  const maxQty = remaining ?? 999
 
   const params = new URLSearchParams()
   params.set('mode', 'payment')
   params.set('line_items[0][price_data][currency]', 'usd')
   params.set('line_items[0][price_data][product_data][name]', `Nick Rains — ${cityShort}`)
   params.set('line_items[0][price_data][unit_amount]', String(tier.cents))
-  params.set('line_items[0][quantity]', '1')
-  params.set('line_items[0][adjustable_quantity][enabled]', 'true')
-  params.set('line_items[0][adjustable_quantity][minimum]', '1')
-  params.set('line_items[0][adjustable_quantity][maximum]', String(maxQty))
+  const qty = Math.min(qtyParam, maxQty)
+  params.set('line_items[0][quantity]', String(qty))
   params.set('metadata[show_id]', showId)
   params.set('metadata[price_cents]', String(tier.cents))
-  params.set('success_url', `${url.origin}/${showId}?ticket=success`)
+  params.set('success_url', `${url.origin}/ticket?session={CHECKOUT_SESSION_ID}`)
   params.set('cancel_url', cancelUrl)
 
   const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {

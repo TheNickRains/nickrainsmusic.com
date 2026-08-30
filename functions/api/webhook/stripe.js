@@ -11,15 +11,14 @@ import { SHOW_META } from '../_shows'
 // $10 door ticket — keep in sync with the payment link price. A link can
 // override per show with metadata price_cents. Payment links may allow
 // adjustable quantity; amount_total tells us how many tickets to issue.
-const TICKET_PRICE_CENTS = 1000
-const MAX_TICKETS_PER_ORDER = 10
+const TICKET_PRICE_CENTS = 1200
 
 export async function onRequestPost(context) {
   const { request, env } = context
   const payload = await request.text()
   const sigHeader = request.headers.get('stripe-signature') || ''
 
-  if (!env.STRIPE_WEBHOOK_SECRET) return new Response('not configured', { status: 500 })
+  if (!env.STRIPE_TICKETING_WEBHOOK_SECRET) return new Response('not configured', { status: 500 })
 
   const parts = Object.fromEntries(
     sigHeader.split(',').map((p) => p.split('=').map((s) => s.trim()))
@@ -33,7 +32,7 @@ export async function onRequestPost(context) {
     return new Response('timestamp out of tolerance', { status: 400 })
   }
 
-  const expected = await hmacHex(env.STRIPE_WEBHOOK_SECRET, `${timestamp}.${payload}`)
+  const expected = await hmacHex(env.STRIPE_TICKETING_WEBHOOK_SECRET, `${timestamp}.${payload}`)
   if (!timingSafeEqual(expected, signature)) {
     return new Response('signature mismatch', { status: 400 })
   }
@@ -115,7 +114,7 @@ async function fulfillTickets(context, session, showId) {
   const unit = Number((session.metadata && session.metadata.price_cents) || 0) || TICKET_PRICE_CENTS
   const qty =
     amount >= unit && amount % unit === 0
-      ? Math.min(amount / unit, MAX_TICKETS_PER_ORDER)
+      ? amount / unit
       : 1
 
   const now = Date.now()
@@ -131,6 +130,36 @@ async function fulfillTickets(context, session, showId) {
 
   if (env.RESEND_API_KEY && env.RESEND_FROM && email) {
     context.waitUntil(sendTicketEmail(env, { ids, showId, email, name }))
+  }
+
+  if (env.GAS_TICKETS_URL && env.GAS_AUTH_TOKEN) {
+    const [firstName, ...rest] = name.trim().split(' ')
+    const lastName = rest.join(' ')
+    const meta = SHOW_META[showId]
+    const cityParts = (meta?.city || '').split(',')
+    const showLocation = cityParts[0].trim()
+    const state = (cityParts[1] || '').trim()
+    const totalDollars = amount / 100
+    context.waitUntil(fetch(env.GAS_TICKETS_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        authToken: env.GAS_AUTH_TOKEN,
+        eventId: sessionId,
+        firstName: firstName || '',
+        lastName: lastName || '',
+        email,
+        showLocation,
+        state,
+        country: 'US',
+        showDate: meta?.date || '',
+        quantity: qty,
+        totalSpend: totalDollars,
+        averageOrder: qty > 0 ? totalDollars / qty : totalDollars,
+        merchSpend: 0,
+        notes: meta?.venue || '',
+      }),
+    }).catch(() => {}))
   }
 }
 
@@ -168,7 +197,8 @@ async function sendTicketEmail(env, { ids, showId, email, name }) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:420px;">
   <tr><td align="center" style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c65a1e;padding-bottom:8px;">You&rsquo;re on the list</td></tr>
   <tr><td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#f2ede4;padding-bottom:6px;">Your Ticket${ids.length > 1 ? 's' : ''}</td></tr>
-  <tr><td align="center" style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a887f;padding-bottom:28px;">Show this at the door</td></tr>
+  <tr><td align="center" style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a887f;padding-bottom:4px;">Show this at the door</td></tr>
+  <tr><td align="center" style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5f5e56;padding-bottom:28px;">Valid for one entry · single scan</td></tr>
   ${ids.map(qrBlock).join('')}
   <tr><td style="border-top:1px solid #33322c;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">

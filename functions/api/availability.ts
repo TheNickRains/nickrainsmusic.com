@@ -16,14 +16,24 @@ export async function onRequestGet({ request, env }: { request: Request; env: En
   const showId = new URL(request.url).searchParams.get('show') || ''
   const meta = SHOW_META[showId]
 
-  if (!meta?.capacity) return json({ remaining: null, soldOut: false })
+  const now = Date.now()
+  const { presale, door } = meta.pricing
+  const tier = presale?.endsAt && now < new Date(presale.endsAt).getTime() ? presale : door
+
+  if (!meta?.capacity) return json({ remaining: null, soldOut: false, presaleActive: !!presale?.endsAt && now < new Date(presale.endsAt).getTime(), priceCents: tier.cents, priceLabel: tier.label })
 
   const sold = await env.DB.prepare(
     'SELECT COUNT(*) AS n FROM tickets WHERE show_id = ?1'
   ).bind(showId).first<{ n: number }>()
 
   const remaining = Math.max(0, meta.capacity - (sold?.n ?? 0))
-  return json({ remaining, soldOut: remaining === 0 })
+  return json({
+    remaining,
+    soldOut: remaining === 0,
+    presaleActive: !!presale?.endsAt && now < new Date(presale.endsAt).getTime(),
+    priceCents: tier.cents,
+    priceLabel: tier.label,
+  })
 }
 
 function json(data: unknown) {

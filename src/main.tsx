@@ -9,6 +9,8 @@ import Songs from './pages/Songs'
 import Queue from './pages/Queue'
 import Join from './pages/Join'
 import Live from './pages/Live'
+import Ticket from './pages/Ticket'
+import Tickets from './pages/Tickets'
 import Checkin from './pages/Checkin'
 import { LINKS } from './data'
 
@@ -45,6 +47,8 @@ const routes =
     </Routes>
   ) : sub === 'live' ? (
     <Routes>
+      <Route path="/ticket" element={<Ticket />} />
+      <Route path="/tickets" element={<Tickets />} />
       <Route path="*" element={<Live />} />
     </Routes>
   ) : (

@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTicket, faLocationDot, faCheck } from '@fortawesome/free-solid-svg-icons'
 
 // ─── Show config ─────────────────────────────────────────────────────────────
 // Add future shows here. Key = URL path (everything after live.nickrainsmusic.com/)
@@ -31,11 +33,11 @@ const SHOWS: Record<string, ShowData> = {
     date: 'Saturday, September 5th',
     dateIso: '20260905',
     time: 'Doors 7 PM · Music 7:30 PM',
-    ticketUrl: '/api/checkout?show=knoxville/090526',
+    ticketUrl: '/tickets?show=knoxville/090526',
     showAt: '2026-09-05T19:00:00-05:00',
     capacity: 75,
     pricing: {
-      presale: { cents: 1000, label: '$10', endsAt: '2026-09-04T23:59:00-05:00' },
+      presale: { cents: 1200, label: '$12', endsAt: '2026-09-04T23:59:00-05:00' },
       door: { cents: 1500, label: '$15' },
     },
     track: {
@@ -53,7 +55,7 @@ function downloadIcs(show: ShowData) {
     'VERSION:2.0',
     'PRODID:-//Nick Rains//Live//EN',
     'BEGIN:VEVENT',
-    `DTSTART:${dt}T193000`,
+    `DTSTART:${dt}T190000`,
     `DTEND:${dt}T210000`,
     `SUMMARY:Nick Rains — Live at ${show.venue}`,
     `LOCATION:${show.address}`,
@@ -190,9 +192,47 @@ export default function Live() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [scrolled, setScrolled] = useState(false)
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
   const [availability, setAvailability] = useState<{ remaining: number | null; soldOut: boolean } | null>(null)
   const ticketParam = new URLSearchParams(window.location.search).get('ticket')
 
+
+  useEffect(() => {
+    document.body.style.background = '#0d0e09'
+    return () => { document.body.style.background = '' }
+  }, [])
+
+useEffect(() => {
+    if (!show?.ticketUrl || !show?.capacity) return
+    fetch(`/api/availability?show=${encodeURIComponent(path)}`)
+      .then(r => r.json())
+      .then(setAvailability)
+      .catch(() => {})
+  }, [path, show?.ticketUrl, show?.capacity])
+
+  // Try immediate autoplay (works on desktop); fall back to first user interaction on mobile.
+  useEffect(() => {
+    if (!show?.track?.url) return
+    const events = ['touchstart', 'mousedown', 'keydown', 'scroll'] as const
+    let started = false
+    const onInteraction = () => {
+      if (started) return
+      started = true
+      audioRef.current?.play().catch(() => {})
+      events.forEach(e => document.removeEventListener(e, onInteraction))
+    }
+    audioRef.current?.play().then(() => { started = true }).catch(() => {
+      events.forEach(e => document.addEventListener(e, onInteraction, { passive: true }))
+    })
+    return () => events.forEach(e => document.removeEventListener(e, onInteraction))
+  }, [show?.track?.url])
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.75)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   function toggle() {
     const el = audioRef.current
@@ -200,20 +240,10 @@ export default function Live() {
     if (el.paused) { el.play() } else { el.pause() }
   }
 
-
-  // No /city/date match → the lineup of upcoming shows (also a friendly
-  // fallback for a stale/typo'd show URL).
+  // No /city/date match → lineup of upcoming shows
   if (!show) return <Lineup />
 
   const mapUrl = `https://maps.apple.com/?q=${encodeURIComponent(show.address)}`
-
-  useEffect(() => {
-    if (!show.ticketUrl || !show.capacity) return
-    fetch(`/api/availability?show=${encodeURIComponent(path)}`)
-      .then(r => r.json())
-      .then(setAvailability)
-      .catch(() => {})
-  }, [path, show.ticketUrl, show.capacity])
 
   const now = Date.now()
   const { presale, door } = show.pricing
@@ -289,7 +319,7 @@ export default function Live() {
 
         {/* Poster typography block — pinned to bottom, centered */}
         <div className="absolute bottom-0 inset-x-0 z-10 pb-10 text-center">
-          {/* KNOXVILLE DEBUT + RAINS — group centered, K pinned to RAINS left edge */}
+          {/* KNOXVILLE DEBUT + RAINS */}
           <div className="flex justify-center mb-5">
             <div className="relative">
               <p
@@ -311,61 +341,99 @@ export default function Live() {
             <div className="h-px w-10 bg-orange/50" />
           </div>
 
-          {/* Venue + date stamp */}
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-paper/55 mb-1">
+          {/* Venue + date stamp — dynamic font size ensures single line on all screens */}
+          <p className="font-mono text-[2.5vw] sm:text-[10px] uppercase tracking-[0.12em] sm:tracking-[0.22em] text-paper/55 mb-1">
             {show.venue} &nbsp;·&nbsp; {show.city}
           </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-orange">
+          <p className="font-mono text-[2.5vw] sm:text-[10px] uppercase tracking-[0.12em] sm:tracking-[0.22em] text-orange">
             {show.date}{show.time ? ` · ${show.time}` : ''}
           </p>
         </div>
       </div>
 
       {/* ── Story ── */}
-      <div className="px-6 py-12 max-w-md mx-auto">
+      <div className="px-6 py-12 max-w-md mx-auto md:max-w-4xl md:px-16">
         <div className="section-head text-ink/40 mb-8">
-          <span>The story</span>
+          <span>My story</span>
         </div>
 
-        <div className="space-y-4 text-[1.05rem] leading-relaxed">
+        <div className="space-y-4 text-[1.05rem] leading-relaxed max-w-xl mx-auto">
           <p>
-            Two years ago my family and I packed everything into a vehicle and hit the road.
-            My wife. My son. And music — the only thing I've ever known how to do.
+            In 2023, I got the chance to play a music festival in Woodstock, New York.
+            I got to meet, sit and talk with some of the biggest artists in the world.
+            One in particular inspired me to start this crazy journey...
           </p>
           <p>
-            We've been moving ever since. Every show is how we eat, how we stay in gas,
-            how we keep going. It's not a lifestyle. It's just our life.
+            Two years ago my wife and I sold everything,
+            and moved our two year old son into an RV and hit the road.
           </p>
           <p>
-            I'm working on my first album right now — songs written on the road,
-            in parking lots and living rooms and places like this one.
-            On September 5th in Knoxville, you'll hear them before anyone else does.
+            We've been on the road ever since. I've busked street corners across North America.
+            I've played rooms of all shapes and sizes, and kept my family and God paramount along the way.
+          </p>
+          <p>
+            I'm making the biggest transition of my life right now — a shift from playing covers, to sharing my own songs.
+            It's a massive risk and there are no guarantees. On September 5th in Knoxville, you'll hear them before anyone else does.
             45 minutes, no covers, just the record in progress — live at sunset.
           </p>
-          <p>
-            Showing up is the whole thing. That's all the support we need.
-          </p>
+          {show.track.url && (
+            <p>
+              The song playing right now is an unreleased demo. I wrote it when my wife was pregnant with our son — it brought up so many emotions, and music is the way I process it all.
+            </p>
+          )}
         </div>
       </div>
 
-      {/* ── Unreleased track — copy only; player is the fixed bar ── */}
-      {show.track.url && (
-        <div className="px-6 pb-12 max-w-md mx-auto">
-          <div className="section-head text-ink/40 mb-8">
-            <span>Before you go</span>
-          </div>
-          <p className="text-sm text-ink/60 leading-relaxed">
-            A song from the album. Written on the road. Not out yet — this is the first listen.
-          </p>
+      {/* ── Photo strip ── */}
+      <div className="overflow-x-auto md:overflow-x-visible pb-2">
+        <div className="flex gap-5 px-6 pb-4 pt-2 items-start w-max md:w-auto md:justify-center md:max-w-4xl md:mx-auto md:px-16">
+          {[
+            { src: '/images/catbird.jpg', alt: 'Catbird Music Festival', caption: "Catbird Fest '23", rotate: '-rotate-2', mt: '' },
+            { src: '/images/family.jpg',  alt: 'Nick and family',        caption: 'The crew',           rotate: 'rotate-1',   mt: 'mt-6' },
+            { src: '/images/rv.jpg',      alt: 'Home on the road',       caption: 'Home on the road',   rotate: '-rotate-1',  mt: 'mt-2' },
+          ].map(({ src, alt, caption, rotate, mt }) => (
+            <figure
+              key={src}
+              className={`polaroid ${rotate} w-44 shrink-0 ${mt} md:cursor-zoom-in`}
+              onClick={() => setLightbox({ src, alt })}
+            >
+              <img src={src} alt={alt} className="film w-full h-48 object-cover object-top" />
+              <figcaption>{caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Lightbox ── */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 cursor-zoom-out"
+          onClick={() => setLightbox(null)}
+        >
+          <img
+            src={lightbox.src}
+            alt={lightbox.alt}
+            className="film max-h-[85vh] max-w-[85vw] object-contain shadow-2xl"
+          />
         </div>
       )}
+
+      {/* ── Signed letter ── */}
+      <div className="px-6 pt-4 pb-10 md:px-16 md:max-w-4xl md:mx-auto">
+        <div className="max-w-xl mx-auto">
+          <p className="text-sm text-ink/55 leading-relaxed italic">
+            If this message has resonated with you, we'd love to meet you.
+          </p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-orange mt-2">♥ —Nick</p>
+        </div>
+      </div>
 
       {/* ── Show details ── */}
       <div className="bg-[#0d0e09] text-paper">
         <div className="px-6 py-12 max-w-md mx-auto space-y-4">
 
           <div className="section-head text-paper/30 mb-8">
-            <span>The night</span>
+            <span>Details</span>
           </div>
 
           {/* Venue card */}
@@ -375,10 +443,13 @@ export default function Live() {
             rel="noopener noreferrer"
             className="flex items-stretch gap-0 rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/8 transition-colors"
           >
-            <div className="w-14 flex-shrink-0 bg-white/8 flex items-center justify-center">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M9 1C6.24 1 4 3.24 4 6c0 3.75 5 11 5 11s5-7.25 5-11c0-2.76-2.24-5-5-5zm0 6.5A1.5 1.5 0 1 1 9 4a1.5 1.5 0 0 1 0 3.5z" fill="rgba(255,255,255,0.4)"/>
-              </svg>
+            <div className="flex flex-col w-14 shrink-0">
+              <div className="bg-orange py-[3px] flex items-center justify-center">
+                <span className="font-mono text-[8px] font-bold tracking-[0.15em] text-paper/90 uppercase">Map</span>
+              </div>
+              <div className="flex-1 flex items-center justify-center bg-paper">
+                <FontAwesomeIcon icon={faLocationDot} className="text-ink text-lg" />
+              </div>
             </div>
             <div className="flex-1 px-4 py-3">
               <p className="font-mono text-[9px] uppercase tracking-widest text-paper/35 mb-0.5">Venue</p>
@@ -396,7 +467,7 @@ export default function Live() {
             className="w-full flex items-stretch gap-0 rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/8 transition-colors text-left"
           >
             {/* Calendar icon */}
-            <div className="flex flex-col w-14 flex-shrink-0">
+            <div className="flex flex-col w-14 shrink-0">
               <div className="bg-orange py-[3px] flex items-center justify-center">
                 <span className="font-mono text-[8px] font-bold tracking-[0.15em] text-paper/90 uppercase">Sep</span>
               </div>
@@ -418,22 +489,28 @@ export default function Live() {
           {/* Tickets */}
           {ticketParam === 'success' ? (
             <div className="flex items-stretch gap-0 rounded-2xl overflow-hidden border border-orange/30 bg-orange/10">
-              <div className="w-14 flex-shrink-0 bg-orange/15 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="#c65a1e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <div className="flex flex-col w-14 shrink-0">
+                <div className="bg-orange py-[3px] flex items-center justify-center">
+                  <span className="font-mono text-[8px] font-bold tracking-[0.15em] text-paper/90 uppercase">Tix</span>
+                </div>
+                <div className="flex-1 flex items-center justify-center bg-paper">
+                  <FontAwesomeIcon icon={faCheck} className="text-ink text-lg" />
+                </div>
               </div>
               <div className="flex-1 px-4 py-3">
                 <p className="font-mono text-[9px] uppercase tracking-widest text-orange/60 mb-0.5">You&rsquo;re on the list</p>
-                <p className="font-display text-lg text-paper leading-tight">Check your email</p>
-                <p className="font-mono text-[10px] text-paper/40 mt-0.5">QR ticket on its way</p>
+                <p className="font-display text-lg text-paper leading-tight">Check your email for your ticket</p>
               </div>
             </div>
           ) : showComplete ? (
             <div className="flex items-stretch gap-0 rounded-2xl overflow-hidden border border-white/10 bg-white/5">
-              <div className="w-14 flex-shrink-0 bg-white/8 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                  <path d="M2 7.5C2 6.67 2.67 6 3.5 6H7V5C7 4.45 7.45 4 8 4H17C17.55 4 18 4.45 18 5V15C18 15.55 17.55 16 17 16H8C7.45 16 7 15.55 7 15V14H3.5C2.67 14 2 13.33 2 12.5V11.5C2.55 11.5 3 11.05 3 10.5C3 9.95 2.55 9.5 2 9.5V7.5Z" stroke="rgba(255,255,255,0.25)" strokeWidth="1.3"/>
-                  <line x1="7" y1="8" x2="7" y2="12" stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="1 1.5"/>
-                </svg>
+              <div className="flex flex-col w-14 shrink-0">
+                <div className="bg-white/10 py-[3px] flex items-center justify-center">
+                  <span className="font-mono text-[8px] font-bold tracking-[0.15em] text-paper/30 uppercase">Tix</span>
+                </div>
+                <div className="flex-1 flex items-center justify-center bg-paper/10">
+                  <FontAwesomeIcon icon={faTicket} className="text-paper/25 text-lg" />
+                </div>
               </div>
               <div className="flex-1 px-4 py-3">
                 <p className="font-mono text-[9px] uppercase tracking-widest text-paper/35 mb-0.5">Tickets</p>
@@ -441,17 +518,24 @@ export default function Live() {
               </div>
             </div>
           ) : soldOut ? (
-            <div className="flex items-stretch gap-0 rounded-2xl overflow-hidden border border-white/10 bg-white/5">
-              <div className="w-14 flex-shrink-0 bg-white/8 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                  <path d="M2 7.5C2 6.67 2.67 6 3.5 6H7V5C7 4.45 7.45 4 8 4H17C17.55 4 18 4.45 18 5V15C18 15.55 17.55 16 17 16H8C7.45 16 7 15.55 7 15V14H3.5C2.67 14 2 13.33 2 12.5V11.5C2.55 11.5 3 11.05 3 10.5C3 9.95 2.55 9.5 2 9.5V7.5Z" stroke="rgba(255,255,255,0.4)" strokeWidth="1.3"/>
-                  <line x1="7" y1="8" x2="7" y2="12" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="1 1.5"/>
-                </svg>
+            <div className="relative flex items-stretch gap-0 rounded-2xl overflow-hidden border border-orange/30 bg-white/5">
+              <div className="flex flex-col w-14 shrink-0 opacity-30">
+                <div className="bg-orange py-[3px] flex items-center justify-center">
+                  <span className="font-mono text-[8px] font-bold tracking-[0.15em] text-paper/90 uppercase">Tix</span>
+                </div>
+                <div className="flex-1 flex items-center justify-center bg-paper">
+                  <FontAwesomeIcon icon={faTicket} className="text-ink text-lg" />
+                </div>
               </div>
-              <div className="flex-1 px-4 py-3">
+              <div className="flex-1 px-4 py-3 opacity-40">
                 <p className="font-mono text-[9px] uppercase tracking-widest text-paper/35 mb-0.5">Tickets</p>
-                <p className="font-display text-lg text-paper leading-tight">Sold Out</p>
-                <p className="font-mono text-[10px] text-paper/40 mt-0.5">{door.label} at the door — cash only</p>
+                <p className="font-display text-lg text-paper leading-tight">{door.label} at the door</p>
+              </div>
+              {/* Stamp */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="border-[3px] border-orange rounded px-3 py-1 rotate-[-10deg] shadow-[0_0_20px_rgba(198,90,30,0.3)]">
+                  <span className="font-mono text-base font-bold tracking-[0.25em] text-orange uppercase">Sold Out</span>
+                </div>
               </div>
             </div>
           ) : show.ticketUrl ? (
@@ -459,11 +543,13 @@ export default function Live() {
               href={show.ticketUrl}
               className="flex items-stretch gap-0 rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/8 transition-colors"
             >
-              <div className="w-14 flex-shrink-0 bg-white/8 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                  <path d="M2 7.5C2 6.67 2.67 6 3.5 6H7V5C7 4.45 7.45 4 8 4H17C17.55 4 18 4.45 18 5V15C18 15.55 17.55 16 17 16H8C7.45 16 7 15.55 7 15V14H3.5C2.67 14 2 13.33 2 12.5V11.5C2.55 11.5 3 11.05 3 10.5C3 9.95 2.55 9.5 2 9.5V7.5Z" stroke="rgba(255,255,255,0.4)" strokeWidth="1.3"/>
-                  <line x1="7" y1="8" x2="7" y2="12" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="1 1.5"/>
-                </svg>
+              <div className="flex flex-col w-14 shrink-0">
+                <div className="bg-orange py-[3px] flex items-center justify-center">
+                  <span className="font-mono text-[8px] font-bold tracking-[0.15em] text-paper/90 uppercase">Tix</span>
+                </div>
+                <div className="flex-1 flex items-center justify-center bg-paper">
+                  <FontAwesomeIcon icon={faTicket} className="text-ink text-lg" />
+                </div>
               </div>
               <div className="flex-1 px-4 py-3">
                 <p className="font-mono text-[9px] uppercase tracking-widest text-paper/35 mb-0.5">Tickets</p>
@@ -487,11 +573,13 @@ export default function Live() {
             </a>
           ) : (
             <div className="flex items-stretch gap-0 rounded-2xl overflow-hidden border border-white/10 bg-white/5">
-              <div className="w-14 flex-shrink-0 bg-white/8 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                  <path d="M2 7.5C2 6.67 2.67 6 3.5 6H7V5C7 4.45 7.45 4 8 4H17C17.55 4 18 4.45 18 5V15C18 15.55 17.55 16 17 16H8C7.45 16 7 15.55 7 15V14H3.5C2.67 14 2 13.33 2 12.5V11.5C2.55 11.5 3 11.05 3 10.5C3 9.95 2.55 9.5 2 9.5V7.5Z" stroke="rgba(255,255,255,0.4)" strokeWidth="1.3"/>
-                  <line x1="7" y1="8" x2="7" y2="12" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="1 1.5"/>
-                </svg>
+              <div className="flex flex-col w-14 shrink-0">
+                <div className="bg-orange py-[3px] flex items-center justify-center">
+                  <span className="font-mono text-[8px] font-bold tracking-[0.15em] text-paper/90 uppercase">Tix</span>
+                </div>
+                <div className="flex-1 flex items-center justify-center bg-paper">
+                  <FontAwesomeIcon icon={faTicket} className="text-ink text-lg" />
+                </div>
               </div>
               <div className="flex-1 px-4 py-3">
                 <p className="font-mono text-[9px] uppercase tracking-widest text-paper/35 mb-0.5">Tickets</p>
@@ -499,50 +587,95 @@ export default function Live() {
               </div>
             </div>
           )}
+
         </div>
       </div>
 
-      {/* Floating mini player — fixed bottom-right */}
+      {/* ── Footer ── */}
+      <div className="bg-[#0d0e09] border-t border-white/5">
+        <div className="px-6 pt-8 pb-5 flex flex-col items-center gap-5">
+          <button
+            onClick={() => {
+              const url = window.location.href
+              if (navigator.share) {
+                navigator.share({ title: `Nick Rains — ${show.city}`, url })
+              } else {
+                navigator.clipboard.writeText(url).then(() => alert('Link copied!'))
+              }
+            }}
+            className="font-mono text-[11px] uppercase tracking-[0.15em] border border-paper/20 rounded-full px-6 py-2.5 text-paper/50 hover:border-orange hover:text-orange transition-colors"
+          >
+            Invite a Friend
+          </button>
+          <a href="https://nickrainsmusic.com" className="font-mono text-[10px] uppercase tracking-widest text-paper/30 hover:text-orange transition-colors">
+            nickrainsmusic.com
+          </a>
+        </div>
+        <div className="overflow-hidden">
+          <div className="ghost text-[21vw] text-center whitespace-nowrap">NICK RAINS</div>
+        </div>
+      </div>
+
+      {/* ── Floating mini-player ── */}
       {show.track.url && (
-        <div className="fixed bottom-6 right-5 z-50 w-52 rounded-lg overflow-hidden bg-[#0d0e09]/90 backdrop-blur-md border border-white/10 shadow-xl">
-          {/* Controls */}
-          <div className="flex items-center gap-3 px-3 py-2.5">
-            <button
-              onClick={toggle}
-              aria-label={playing ? 'Pause' : 'Play'}
-              className="w-7 h-7 rounded-full border border-orange/50 flex items-center justify-center flex-shrink-0 hover:border-orange transition-colors"
+        <>
+          {/* Mobile: full-width bar slides up from bottom */}
+          <div className={`md:hidden fixed bottom-0 inset-x-0 z-50 transition-transform duration-500 ease-out ${scrolled ? 'translate-y-0' : 'translate-y-full'}`}>
+            <div
+              className="h-[2px] bg-white/10 cursor-pointer"
+              onClick={e => {
+                const el = audioRef.current
+                if (!el) return
+                const rect = e.currentTarget.getBoundingClientRect()
+                el.currentTime = ((e.clientX - rect.left) / rect.width) * el.duration
+              }}
             >
-              {playing ? <PauseIcon /> : <PlayIcon />}
-            </button>
-            <div className="min-w-0 overflow-hidden">
-              <p className="font-mono text-[8px] uppercase tracking-widest text-paper/35 leading-none mb-1">Unreleased Demo</p>
-              <span className="marquee font-mono text-[10px] text-paper/75 leading-none">
-                {show.track.title}&nbsp;–&nbsp;Nick Rains&nbsp;&nbsp;·&nbsp;&nbsp;{show.track.title}&nbsp;–&nbsp;Nick Rains&nbsp;&nbsp;·&nbsp;&nbsp;
-              </span>
+              <div className="h-full bg-orange transition-all duration-100" style={{ width: `${progress}%` }} />
+            </div>
+            <div className="bg-[#0d0e09]/95 backdrop-blur-sm border-t border-white/8 px-5 py-3 flex items-center gap-4">
+              <button
+                onClick={toggle}
+                aria-label={playing ? 'Pause' : 'Play'}
+                className="w-8 h-8 rounded-full border border-orange/50 flex items-center justify-center shrink-0 hover:border-orange transition-colors"
+              >
+                {playing ? <PauseIcon /> : <PlayIcon />}
+              </button>
+              <div className="flex-1 min-w-0">
+                <p className="font-mono text-[8px] uppercase tracking-widest text-paper/35 leading-none mb-0.5">Now playing · Unreleased</p>
+                <p className="font-mono text-[11px] text-paper/65 leading-none truncate">{show.track.title} – Nick Rains</p>
+              </div>
             </div>
           </div>
 
-          {/* Progress bar — bottom edge */}
-          <div
-            className="h-[2px] bg-white/10 cursor-pointer"
-            onClick={e => {
-              const el = audioRef.current
-              if (!el) return
-              const rect = e.currentTarget.getBoundingClientRect()
-              el.currentTime = ((e.clientX - rect.left) / rect.width) * el.duration
-            }}
-          >
-            <div className="h-full bg-orange transition-all duration-100" style={{ width: `${progress}%` }} />
+          {/* Desktop: floating card in bottom-right corner — always visible */}
+          <div className="hidden md:block fixed bottom-6 right-6 z-50 w-72 rounded-xl overflow-hidden shadow-2xl">
+            <div
+              className="h-[3px] bg-white/10 cursor-pointer"
+              onClick={e => {
+                const el = audioRef.current
+                if (!el) return
+                const rect = e.currentTarget.getBoundingClientRect()
+                el.currentTime = ((e.clientX - rect.left) / rect.width) * el.duration
+              }}
+            >
+              <div className="h-full bg-orange transition-all duration-100" style={{ width: `${progress}%` }} />
+            </div>
+            <div className="bg-[#0d0e09] border border-white/10 border-t-0 rounded-b-xl px-4 py-3.5 flex items-center gap-3">
+              <button
+                onClick={toggle}
+                aria-label={playing ? 'Pause' : 'Play'}
+                className="w-9 h-9 rounded-full border border-orange/50 flex items-center justify-center shrink-0 hover:border-orange transition-colors"
+              >
+                {playing ? <PauseIcon /> : <PlayIcon />}
+              </button>
+              <div className="flex-1 min-w-0">
+                <p className="font-mono text-[8px] uppercase tracking-widest text-paper/35 leading-none mb-1">Now playing · Unreleased</p>
+                <p className="font-mono text-[12px] text-paper/70 leading-none truncate">{show.track.title} – Nick Rains</p>
+              </div>
+            </div>
           </div>
-        </div>
+        </>
       )}
-
-      {/* ── Footer ── */}
-      <div className="px-6 py-8 text-center">
-        <a href="https://nickrainsmusic.com" className="font-mono text-[10px] uppercase tracking-widest text-ink/30 hover:text-orange transition-colors">
-          nickrainsmusic.com
-        </a>
-      </div>
 
     </div>
   )

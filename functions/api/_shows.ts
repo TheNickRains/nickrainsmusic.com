@@ -19,6 +19,7 @@ export interface ShowMeta {
   time: string
   showAt: string    // ISO 8601 — checkout blocks after this; card shows "Show complete"
   capacity?: number // optional max tickets; omit for unlimited
+  ogImage?: string  // path under /public — used as OG social image; falls back to /images/headshot.jpg
   pricing: {
     presale?: PriceTier
     door: PriceTier
@@ -33,9 +34,10 @@ export const SHOW_META: Record<string, ShowMeta> = {
     date: 'Saturday, September 5th',
     time: 'Doors 7 PM · Music 7:30 PM',
     showAt: '2026-09-05T19:00:00-05:00',
-    capacity: 75,
+
+    ogImage: '/assets/shows/knoxville-090526/knoxville-opengraph.jpg',
     pricing: {
-      presale: { cents: 1000, label: '$10', endsAt: '2026-09-04T23:59:00-05:00' },
+      presale: { cents: 1200, label: '$12', endsAt: '2026-09-04T23:59:00-05:00' },
       door: { cents: 1500, label: '$15' },
     },
   },
